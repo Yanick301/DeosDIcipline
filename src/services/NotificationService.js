@@ -1,6 +1,3 @@
-import { DB } from '../lib/db';
-import { TRANSLATIONS } from '../lib/i18n';
-
 export const NotificationService = {
     async requestPermission() {
         if (!('Notification' in window)) return false;
@@ -9,22 +6,37 @@ export const NotificationService = {
         return result === 'granted';
     },
 
-    async scheduleReminder(habit, lang = 'en') {
-        if (!habit.reminderTime) return;
-        const granted = await this.requestPermission();
-        if (!granted) return;
+    async checkReminders(habits, completions, t) {
+        const now = new Date();
+        const currentTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        const todayStr = now.toISOString().split('T')[0];
+        const dayOfWeek = now.getDay();
 
-        // In a real PWA context, this would use a Background Sync or Alarm API.
-        // For this prototype, we'll log it and use a simple setTimeout for the session.
-        console.log(`[NotificationService] Scheduled "${habit.name}" for ${habit.reminderTime}`);
+        habits.forEach(habit => {
+            if (habit.reminderTime === currentTime && habit.days.includes(dayOfWeek)) {
+                const isDone = completions[habit.id]?.[todayStr] === 'done';
+                if (!isDone) {
+                    this.sendNotification(
+                        t('notif_title') || 'DeOs Discipline 🔱',
+                        t('notif_body', habit.name)
+                    );
+                }
+            }
+        });
+    },
+
+    sendNotification(title, body) {
+        if (Notification.permission === 'granted') {
+            new Notification(title, {
+                body: body,
+                icon: '/vite.svg',
+                badge: '/vite.svg',
+                tag: 'deos-reminder'
+            });
+        }
     },
 
     sendTest(t) {
-        if (Notification.permission === 'granted') {
-            new Notification('DeOs Discipline 🔱', {
-                body: t('notif_body', 'Focus session'),
-                icon: '/vite.svg'
-            });
-        }
+        this.sendNotification('DeOs Discipline 🔱', t('notif_body', 'Focus session'));
     }
 };

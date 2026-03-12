@@ -40,13 +40,13 @@ const Home = ({ onEdit }) => {
             {/* Header */}
             <header className="flex justify-between items-end">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tight text-white mb-1">
+                    <span className="text-airbnb text-[10px] font-black uppercase tracking-[0.4em] mb-2 block">
+                        {userId}
+                    </span>
+                    <h1 className="text-4xl font-black tracking-tighter text-white mb-2 leading-none">
                         {greeting(new Date().getHours())}
                     </h1>
-                    <p className="text-airbnb text-[10px] font-black uppercase tracking-widest mb-1">
-                        {userId}
-                    </p>
-                    <p className="text-text-secondary text-sm font-medium capitalize">
+                    <p className="text-text-tertiary text-xs font-bold tracking-wide uppercase opacity-60">
                         {formattedDate}
                     </p>
                 </div>
@@ -64,21 +64,29 @@ const Home = ({ onEdit }) => {
             {/* Stats Quick Look */}
             <div className="grid grid-cols-3 gap-3">
                 {[
-                    { label: t('streak'), value: calculateMasterStreak(), color: 'orange' },
-                    { label: t('done'), value: doneHabits.length, color: 'airbnb' },
-                    { label: t('score'), value: level, color: 'green' }
+                    { label: t('streak'), value: calculateMasterStreak(), color: 'orange', icon: '🔥' },
+                    { label: t('done'), value: doneHabits.length, color: 'airbnb', icon: '✅' },
+                    { label: t('score'), value: level, color: 'green', icon: '🔱' }
                 ].map((stat, i) => (
                     <motion.div
                         key={i}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 * i }}
-                        className="glass-card p-3 flex flex-col items-center justify-center text-center"
+                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{
+                            type: 'spring',
+                            stiffness: 400,
+                            damping: 25,
+                            delay: 0.05 * i
+                        }}
+                        className="glass-premium p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group"
                     >
-                        <span className="text-sm font-bold text-text-tertiary mb-1 uppercase tracking-widest leading-none">
+                        <div className="absolute -right-1 -top-1 text-2xl opacity-10 grayscale group-hover:grayscale-0 transition-all duration-500">
+                            {stat.icon}
+                        </div>
+                        <span className="text-[9px] font-black text-white/30 mb-2 uppercase tracking-[0.2em] leading-none z-10">
                             {stat.label}
                         </span>
-                        <span className={`text-2xl font-black ${stat.color === 'airbnb' ? 'text-airbnb' : stat.color === 'orange' ? 'text-orange-400' : 'text-green-400'}`}>
+                        <span className={`text-2xl font-black z-10 ${stat.color === 'airbnb' ? 'text-airbnb' : stat.color === 'orange' ? 'text-orange-400' : 'text-green-400'}`}>
                             {stat.value}
                         </span>
                     </motion.div>

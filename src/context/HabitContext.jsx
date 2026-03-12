@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { DB } from '../lib/db';
 import { TRANSLATIONS } from '../lib/i18n';
+import { NotificationService } from '../services/NotificationService';
 
 const HabitContext = createContext();
 
@@ -37,6 +38,15 @@ export const HabitProvider = ({ children }) => {
         setLevel(DB.get('deos_level', 1));
         setUnlockedBadges(DB.getUnlockedBadges());
     }, []);
+
+    useEffect(() => {
+        // Notification loop - check every 60 seconds
+        const interval = setInterval(() => {
+            NotificationService.checkReminders(habits, completions, t);
+        }, 60000);
+
+        return () => clearInterval(interval);
+    }, [habits, completions, t]);
 
     const t = (key, ...replacements) => {
         let str = TRANSLATIONS[lang]?.[key] ?? TRANSLATIONS['en']?.[key] ?? key;

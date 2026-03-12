@@ -44,7 +44,9 @@ const AppContent = () => {
 
   return (
     <Layout activeTab={activeTab} setActiveTab={(tab) => handleNav(tab)}>
-      {renderScreen()}
+      <div className="page-transition">
+        {renderScreen()}
+      </div>
     </Layout>
   );
 };

@@ -33,18 +33,18 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
             </main>
 
             {/* Floating Tab Bar */}
-            <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[420px] h-20 bg-surface-200/90 backdrop-blur-2xl border border-white/5 rounded-[32px] flex items-center justify-between px-4 z-50 shadow-2xl shadow-black/50">
+            <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[420px] h-20 bg-surface-200/40 backdrop-blur-3xl border border-white/10 rounded-[32px] flex items-center justify-between px-4 z-50 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
                 {tabs.map((tab) => {
                     if (tab.isFab) {
                         return (
                             <div key="add-fab" className="relative -top-8 px-1">
                                 <motion.button
-                                    whileHover={{ scale: 1.1 }}
+                                    whileHover={{ scale: 1.1, y: -2 }}
                                     whileTap={{ scale: 0.9 }}
                                     onClick={() => setActiveTab('add')}
-                                    className="w-14 h-14 bg-airbnb rounded-full flex items-center justify-center shadow-lg shadow-airbnb/30 text-white"
+                                    className="w-16 h-16 bg-airbnb rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(255,56,92,0.4)] text-white border-4 border-surface-100"
                                 >
-                                    <Plus size={28} strokeWidth={3} />
+                                    <Plus size={32} strokeWidth={3} />
                                 </motion.button>
                             </div>
                         );
@@ -55,22 +55,27 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`flex flex-col items-center justify-center min-w-[40px] transition-all duration-300 ${isActive ? 'text-airbnb' : 'text-text-tertiary'}`}
+                            className={`flex flex-col items-center justify-center min-w-[44px] h-full relative transition-all duration-500`}
                         >
                             <motion.div
-                                animate={isActive ? { y: -2, scale: 1.1 } : { y: 0, scale: 1 }}
-                                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                className="relative"
+                                animate={isActive ? { y: -4 } : { y: 0 }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                                className={`relative p-2 rounded-2xl transition-colors ${isActive ? 'bg-airbnb/10 text-airbnb' : 'text-text-tertiary hover:text-white/40'}`}
                             >
-                                <tab.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                                <tab.icon
+                                    size={20}
+                                    strokeWidth={isActive ? 2.5 : 2}
+                                    className="transition-all duration-300"
+                                />
                                 {isActive && (
                                     <motion.div
-                                        layoutId="tab-dot"
-                                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-airbnb rounded-full"
+                                        layoutId="tab-pill"
+                                        className="absolute inset-0 bg-airbnb/5 rounded-2xl -z-10"
+                                        transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                                     />
                                 )}
                             </motion.div>
-                            <span className={`text-[8px] font-black tracking-tight uppercase leading-none mt-1 transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 scale-75 h-0'}`}>
+                            <span className={`absolute bottom-2 text-[7px] font-black tracking-[0.15em] uppercase transition-all duration-500 ${isActive ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-75'}`}>
                                 {tab.label}
                             </span>
                         </button>

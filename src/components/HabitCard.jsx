@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, SkipForward, Flame, Clock } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { HABIT_ICONS } from '../lib/constants';
 
 const HabitCard = ({ habit, status, streak, onComplete, onNav }) => {
@@ -68,7 +69,16 @@ const HabitCard = ({ habit, status, streak, onComplete, onNav }) => {
                     <>
                         <motion.button
                             whileTap={{ scale: 0.8 }}
-                            onClick={() => onComplete(habit.id, 'done')}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                confetti({
+                                    particleCount: 100,
+                                    spread: 70,
+                                    origin: { y: 0.6 },
+                                    colors: ['#FF385C', '#ffffff', '#000000']
+                                });
+                                onComplete(habit.id, 'done');
+                            }}
                             className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-text-secondary flex items-center justify-center border border-white/5"
                         >
                             <Check size={20} strokeWidth={2.5} />
