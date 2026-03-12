@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import Stats from './pages/Stats';
 import Awards from './pages/Awards';
 import Profile from './pages/Profile';
+import Onboarding from './pages/Onboarding';
+import AddHabit from './pages/AddHabit';
 import Community from './pages/Community';
 import Programs from './pages/Programs';
 import Journal from './pages/Journal';
