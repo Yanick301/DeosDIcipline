@@ -102,7 +102,7 @@ const Profile = () => {
             {/* About */}
             <footer className="text-center space-y-4 pt-10">
                 <div className="flex items-center justify-center gap-2 text-text-tertiary text-[10px] font-black uppercase tracking-widest">
-                    Made with <Heart size={12} className="text-airbnb fill-airbnb" /> by Antigravity
+                    Made with <Heart size={12} className="text-airbnb fill-airbnb" /> by DeOs
                 </div>
                 <p className="text-[10px] font-bold text-text-tertiary opacity-40 uppercase tracking-widest">
                     DeOs Discipline v4.0.0
