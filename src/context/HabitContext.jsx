@@ -92,6 +92,22 @@ export const HabitProvider = ({ children }) => {
         updateHabits(newHabits);
     };
 
+    const updateHabit = (id, updated) => {
+        const newHabits = habits.map(h => h.id === id ? { ...h, ...updated } : h);
+        updateHabits(newHabits);
+    };
+
+    const deleteHabit = (id) => {
+        const newHabits = habits.filter(h => h.id !== id);
+        updateHabits(newHabits);
+
+        // Also clean up completions
+        const newComps = { ...completions };
+        delete newComps[id];
+        setCompletions(newComps);
+        DB.saveCompletions(newComps);
+    };
+
     const toggleCompletion = (habitId, dateStr, status) => {
         const newComps = { ...completions };
         if (!newComps[habitId]) newComps[habitId] = {};
@@ -126,7 +142,7 @@ export const HabitProvider = ({ children }) => {
 
     return (
         <HabitContext.Provider value={{
-            habits, updateHabits, addHabit,
+            habits, updateHabits, addHabit, updateHabit, deleteHabit,
             completions, toggleCompletion,
             settings, lang, changeLang, t,
             onboardDone, finishOnboarding,

@@ -5,7 +5,7 @@ import HabitCard from '../components/HabitCard';
 import ProgressRing from '../components/ProgressRing';
 import QuoteCard from '../components/QuoteCard';
 
-const Home = () => {
+const Home = ({ onEdit }) => {
     const { habits, completions, toggleCompletion, t, lang, level, xp, userId } = useHabits();
 
     const today = new Date().getDay();
@@ -113,7 +113,7 @@ const Home = () => {
                                 status={null}
                                 streak={0}
                                 onComplete={toggleCompletion}
-                                onNav={(id) => console.log('nav to', id)}
+                                onNav={(id) => onEdit(id)}
                             />
                         ))}
 
@@ -129,7 +129,7 @@ const Home = () => {
                                 status={completions[h.id]?.[dateStr]}
                                 streak={0}
                                 onComplete={toggleCompletion}
-                                onNav={(id) => console.log('nav to', id)}
+                                onNav={(id) => onEdit(id)}
                             />
                         ))}
 
@@ -145,7 +145,7 @@ const Home = () => {
                                 status="done"
                                 streak={0}
                                 onComplete={toggleCompletion}
-                                onNav={(id) => console.log('nav to', id)}
+                                onNav={(id) => onEdit(id)}
                             />
                         ))}
                     </div>

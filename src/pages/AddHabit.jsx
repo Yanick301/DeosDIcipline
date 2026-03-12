@@ -4,20 +4,32 @@ import { useHabits } from '../context/HabitContext';
 import { X, Check, Clock, Calendar, BarChart, Palette } from 'lucide-react';
 import { HABIT_ICONS } from '../lib/constants';
 
-const AddHabit = ({ onDone }) => {
-    const { t, addHabit } = useHabits();
-    const [name, setName] = useState('');
-    const [desc, setDesc] = useState('');
-    const [icon, setIcon] = useState('fitness');
-    const [color, setColor] = useState('#FF385C');
-    const [days, setDays] = useState([0, 1, 2, 3, 4, 5, 6]);
-    const [time, setTime] = useState('');
-    const [priority, setPriority] = useState('MEDIUM');
+const AddHabit = ({ onDone, editingHabit }) => {
+    const { t, addHabit, updateHabit, deleteHabit } = useHabits();
+    const [name, setName] = useState(editingHabit?.name || '');
+    const [desc, setDesc] = useState(editingHabit?.description || '');
+    const [icon, setIcon] = useState(editingHabit?.icon || 'fitness');
+    const [color, setColor] = useState(editingHabit?.color || '#FF385C');
+    const [days, setDays] = useState(editingHabit?.days || [0, 1, 2, 3, 4, 5, 6]);
+    const [time, setTime] = useState(editingHabit?.reminderTime || '');
+    const [priority, setPriority] = useState(editingHabit?.priority || 'MEDIUM');
 
     const handleSave = () => {
         if (!name) return;
-        addHabit({ name, description: desc, icon, color, days, reminderTime: time, priority });
+        const data = { name, description: desc, icon, color, days, reminderTime: time, priority };
+        if (editingHabit) {
+            updateHabit(editingHabit.id, data);
+        } else {
+            addHabit(data);
+        }
         onDone();
+    };
+
+    const handleDelete = () => {
+        if (confirm(t('delete_confirm', name))) {
+            deleteHabit(editingHabit.id);
+            onDone();
+        }
     };
 
     const COLORS = ['#FF385C', '#0A84FF', '#30D158', '#FF9F0A', '#BF5AF2', '#32ADE6', '#FF2D55', '#FFD60A'];
@@ -28,7 +40,9 @@ const AddHabit = ({ onDone }) => {
                 <button onClick={onDone} className="text-text-secondary">
                     <X size={24} />
                 </button>
-                <h1 className="text-xl font-black text-white uppercase tracking-widest">{t('new_habit')}</h1>
+                <h1 className="text-xl font-black text-white uppercase tracking-widest">
+                    {editingHabit ? t('edit_habit') : t('new_habit')}
+                </h1>
                 <button onClick={handleSave} className="text-airbnb font-black text-lg">
                     {t('done_btn')}
                 </button>
@@ -125,6 +139,15 @@ const AddHabit = ({ onDone }) => {
                         />
                     </div>
                 </div>
+
+                {editingHabit && (
+                    <button
+                        onClick={handleDelete}
+                        className="w-full h-14 bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl font-black text-sm uppercase tracking-widest mt-8 hover:bg-red-500 hover:text-white transition-all"
+                    >
+                        {t('delete_habit')}
+                    </button>
+                )}
             </div>
         </div>
     );
