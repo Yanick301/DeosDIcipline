@@ -61,23 +61,33 @@ const Awards = () => {
                 <h2 className="text-xs font-black uppercase tracking-[0.2em] text-text-tertiary px-1">
                     {t('leaderboard')}
                 </h2>
-                <div className="glass-card divide-y divide-white/5 p-0 overflow-hidden">
+                <div className="glass-card divide-y divide-white/5 p-0 overflow-hidden text-center sm:text-left">
                     {[
-                        { name: 'Fitness Warrior', score: 98, color: '#FF385C' },
-                        { name: 'Deep Work', score: 92, color: '#0A84FF' },
-                        { name: 'Cold Shower', score: 85, color: '#32ADE6' }
-                    ].map((habit, i) => (
-                        <div key={i} className="flex items-center gap-4 p-4">
-                            <span className={`text-lg font-black ${i === 0 ? 'text-yellow-400' : 'text-text-tertiary'}`}>
+                        { name: 'Elite Warrior', score: 98, level: 12, color: '#FF385C' },
+                        { name: userId, score: Math.round((xp % 1000) / 10), level: level, isMe: true, color: '#0A84FF' },
+                        { name: 'Cold Shower King', score: 85, level: 8, color: '#32ADE6' },
+                        { name: 'Deep Work Master', score: 72, level: 5, color: '#BF5AF2' }
+                    ].sort((a, b) => b.level - a.level).map((user, i) => (
+                        <div key={i} className={`flex items-center gap-4 p-5 ${user.isMe ? 'bg-airbnb/5' : ''}`}>
+                            <span className={`text-lg font-black w-6 ${i === 0 ? 'text-yellow-400' : i === 1 ? 'text-slate-400' : 'text-orange-900/40'}`}>
                                 {i + 1}
                             </span>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-bold text-white truncate">{habit.name}</p>
-                                <div className="w-full h-1 bg-white/5 rounded-full mt-2">
-                                    <div className="h-full rounded-full" style={{ width: `${habit.score}%`, backgroundColor: habit.color }} />
+                                <div className="flex justify-between items-end mb-2">
+                                    <p className={`text-sm font-black truncate ${user.isMe ? 'text-airbnb' : 'text-white'}`}>
+                                        {user.name} {user.isMe && '(You)'}
+                                    </p>
+                                    <span className="text-[10px] font-black text-white/40 uppercase">Level {user.level}</span>
+                                </div>
+                                <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${user.score}%` }}
+                                        className="h-full rounded-full"
+                                        style={{ backgroundColor: user.color }}
+                                    />
                                 </div>
                             </div>
-                            <span className="text-xs font-black" style={{ color: habit.color }}>{habit.score}%</span>
                         </div>
                     ))}
                 </div>
