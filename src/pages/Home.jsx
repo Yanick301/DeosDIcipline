@@ -6,7 +6,7 @@ import ProgressRing from '../components/ProgressRing';
 import QuoteCard from '../components/QuoteCard';
 
 const Home = ({ onEdit }) => {
-    const { habits, completions, toggleCompletion, t, lang, level, xp, userId } = useHabits();
+    const { habits, completions, toggleCompletion, calculateMasterStreak, calculateHabitStreak, t, lang, level, xp, userId } = useHabits();
 
     const today = new Date().getDay();
     const dateStr = new Date().toISOString().split('T')[0];
