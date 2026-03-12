@@ -118,10 +118,11 @@ const AddHabit = ({ onDone, editingHabit }) => {
                                 <button
                                     key={i}
                                     onClick={() => {
-                                        if (days.includes(i)) setDays(days.filter(idx => idx !== i));
-                                        else setDays([...days, i]);
+                                        const dList = Array.isArray(days) ? days : [];
+                                        if (dList.includes(i)) setDays(dList.filter(idx => idx !== i));
+                                        else setDays([...dList, i]);
                                     }}
-                                    className={`w-7 h-7 rounded-sm flex items-center justify-center text-[10px] font-black transition-colors ${days.includes(i) ? 'bg-airbnb text-white' : 'bg-white/5 text-text-tertiary'}`}
+                                    className={`w-7 h-7 rounded-sm flex items-center justify-center text-[10px] font-black transition-colors ${(Array.isArray(days) && days.includes(i)) ? 'bg-airbnb text-white' : 'bg-white/5 text-text-tertiary'}`}
                                 >
                                     {d}
                                 </button>

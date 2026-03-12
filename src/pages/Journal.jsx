@@ -30,7 +30,7 @@ const Journal = () => {
     };
 
     const deleteEntry = (id) => {
-        const updated = entries.filter(e => e.id !== id);
+        const updated = (entries || []).filter(e => e.id !== id);
         setEntries(updated);
         DB.set('deos_journal', updated);
     };

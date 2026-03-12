@@ -5,7 +5,7 @@ import { Award, Trophy, Star, Shield, Zap } from 'lucide-react';
 import { BADGES } from '../lib/constants';
 
 const Awards = () => {
-    const { t, unlockedBadges } = useHabits();
+    const { t, unlockedBadges, userId, xp, level } = useHabits();
 
     return (
         <div className="space-y-8 pb-32">
