@@ -23,13 +23,18 @@ const Community = () => {
         setMessages(mockMessages);
         setActiveUsers(Math.floor(Math.random() * 50) + 120);
 
-        const channel = supabase.channel(CHAT_CHANNEL)
-            .on('broadcast', { event: 'message' }, ({ payload }) => {
-                setMessages(prev => [...prev, payload]);
-            })
-            .subscribe();
+        let channel;
+        try {
+            channel = supabase.channel(CHAT_CHANNEL)
+                .on('broadcast', { event: 'message' }, ({ payload }) => {
+                    setMessages(prev => [...prev, payload]);
+                })
+                .subscribe();
+        } catch (e) {
+            console.error("Supabase connection failed:", e);
+        }
 
-        return () => supabase.removeChannel(channel);
+        return () => channel && supabase.removeChannel(channel);
     }, []);
 
     useEffect(() => {

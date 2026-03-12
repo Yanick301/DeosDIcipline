@@ -58,6 +58,6 @@ export const DB = {
     setOnboardDone: (val) => localStorage.setItem(KEYS.ONBOARD_DONE, val),
 
     clearAll() {
-        Object.values(KEYS).forEach(k => localStorage.removeItem(k));
+        localStorage.clear();
     }
 };
