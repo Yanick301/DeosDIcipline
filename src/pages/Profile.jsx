@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useHabits } from '../context/HabitContext';
-import { Settings, Bell, Download, Trash2, Globe, Heart } from 'lucide-react';
+import { Settings, LogOut, Shield, Bell, HelpCircle, Heart, Globe, Trash2, Github } from 'lucide-react';
+import { NotificationService } from '../services/NotificationService';
 
 const Profile = () => {
     const { t, lang, changeLang, xp, level, userId } = useHabits();
@@ -48,6 +49,46 @@ const Profile = () => {
                     </div>
                 </div>
             </header>
+
+            {/* Settings & Security */}
+            <section className="space-y-4">
+                <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-tertiary px-2">Settings & Security</h2>
+                <div className="grid grid-cols-1 gap-3">
+                    <button
+                        onClick={async () => {
+                            const granted = await NotificationService.requestPermission();
+                            if (granted) alert('Notifications Enabled! 🔱');
+                        }}
+                        className="glass-premium p-5 flex items-center justify-between group hover:border-gold/30 transition-all"
+                    >
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-gold/10 text-gold flex items-center justify-center">
+                                <Bell size={20} />
+                            </div>
+                            <div className="text-left">
+                                <p className="text-sm font-bold text-white">Enable Notifications</p>
+                                <p className="text-[10px] text-text-tertiary uppercase tracking-widest">Get daily habit alarms</p>
+                            </div>
+                        </div>
+                        <div className="w-2 h-2 rounded-full bg-gold animate-pulse" />
+                    </button>
+
+                    {[
+                        { icon: Shield, label: 'Privacy Policy', sub: 'How we guard your data' },
+                        { icon: HelpCircle, label: 'Support & FAQ', sub: 'Get help with your journey' }
+                    ].map((item, i) => (
+                        <button key={i} className="glass-premium p-5 flex items-center gap-4 group hover:border-white/20 transition-all">
+                            <div className="w-10 h-10 rounded-xl bg-white/5 text-text-tertiary flex items-center justify-center">
+                                <item.icon size={20} />
+                            </div>
+                            <div className="text-left">
+                                <p className="text-sm font-bold text-white">{item.label}</p>
+                                <p className="text-[10px] text-text-tertiary uppercase tracking-widest">{item.sub}</p>
+                            </div>
+                        </button>
+                    ))}
+                </div>
+            </section>
 
             {/* Settings Sections */}
             <section className="space-y-4">
