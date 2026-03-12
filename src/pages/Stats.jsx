@@ -11,14 +11,16 @@ const Stats = () => {
     const progress = ((xp - currentLevelBaseXp) / (nextLevelXp - currentLevelBaseXp)) * 100;
 
     // Calculate real stats
-    const totalCompletions = Object.values(completions).reduce((acc, habitComps) => {
+    const totalCompletions = Object.values(completions || {}).reduce((acc, habitComps) => {
+        if (!habitComps || typeof habitComps !== 'object') return acc;
         return acc + Object.values(habitComps).filter(v => v === 'done').length;
     }, 0);
 
     // Calculate best streak (simplified for now)
     const calculateBestStreak = () => {
         let max = 0;
-        Object.values(completions).forEach(habitComps => {
+        Object.values(completions || {}).forEach(habitComps => {
+            if (!habitComps || typeof habitComps !== 'object') return;
             const dates = Object.keys(habitComps).filter(d => habitComps[d] === 'done').sort();
             if (dates.length > 0) {
                 let current = 1;
@@ -114,8 +116,8 @@ const Stats = () => {
                             const dayName = ['S', 'M', 'T', 'W', 'T', 'F', 'S'][d.getDay()];
 
                             // Count done habits for this day
-                            const count = Object.values(completions).filter(h => h[ds] === 'done').length;
-                            const totalHabitsOnDay = habits.filter(h => h.days.includes(d.getDay())).length;
+                            const count = Object.values(completions || {}).filter(hComps => hComps && hComps[ds] === 'done').length;
+                            const totalHabitsOnDay = (habits || []).filter(h => Array.isArray(h.days) && h.days.includes(d.getDay())).length;
                             const percentage = totalHabitsOnDay > 0 ? (count / totalHabitsOnDay) * 100 : 0;
 
                             days.push({ name: dayName, percentage, isToday: i === 0 });
@@ -153,7 +155,7 @@ const Stats = () => {
                                 d.setDate(today.getDate() - i);
                                 const ds = d.toISOString().split('T')[0];
 
-                                const count = Object.values(completions).filter(h => h[ds] === 'done').length;
+                                const count = Object.values(completions || {}).filter(hComps => hComps && hComps[ds] === 'done').length;
                                 let opacity = 'bg-white/5';
                                 if (count > 0) opacity = 'bg-airbnb/20';
                                 if (count > 2) opacity = 'bg-airbnb/50';

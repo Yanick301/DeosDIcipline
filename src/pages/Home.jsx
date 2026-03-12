@@ -11,7 +11,7 @@ const Home = ({ onEdit }) => {
     const today = new Date().getDay();
     const dateStr = new Date().toISOString().split('T')[0];
 
-    const todayHabits = habits.filter(h => h.days.includes(today));
+    const todayHabits = habits.filter(h => Array.isArray(h.days) && h.days.includes(today));
     const doneHabits = todayHabits.filter(h => completions[h.id]?.[dateStr] === 'done');
     const pendingHabits = todayHabits.filter(h => !completions[h.id]?.[dateStr]);
     const otherHabits = todayHabits.filter(h => {

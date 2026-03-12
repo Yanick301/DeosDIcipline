@@ -78,7 +78,10 @@ export const HabitProvider = ({ children }) => {
         if (currentXp >= 5000 && !currentBadgeIds.has('xp_5000')) newlyUnlocked.push('xp_5000');
 
         // 2. Completion Milestones
-        const totalDone = Object.values(currentComps).reduce((acc, h) => acc + Object.values(h).filter(v => v === 'done').length, 0);
+        const totalDone = Object.values(currentComps || {}).reduce((acc, h) => {
+            if (!h || typeof h !== 'object') return acc;
+            return acc + Object.values(h).filter(v => v === 'done').length;
+        }, 0);
         if (totalDone >= 1 && !currentBadgeIds.has('first_step')) newlyUnlocked.push('first_step');
         if (totalDone >= 10 && !currentBadgeIds.has('consistent')) newlyUnlocked.push('consistent');
         if (totalDone >= 100 && !currentBadgeIds.has('discipline_master')) newlyUnlocked.push('discipline_master');
@@ -98,7 +101,8 @@ export const HabitProvider = ({ children }) => {
 
     const calculateMasterStreak = () => {
         const allDates = new Set();
-        Object.values(completions).forEach(hComps => {
+        Object.values(completions || {}).forEach(hComps => {
+            if (!hComps || typeof hComps !== 'object') return;
             Object.keys(hComps).forEach(date => {
                 if (hComps[date] === 'done') allDates.add(date);
             });

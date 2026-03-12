@@ -13,7 +13,7 @@ export const NotificationService = {
         const dayOfWeek = now.getDay();
 
         habits.forEach(habit => {
-            if (habit.reminderTime === currentTime && habit.days.includes(dayOfWeek)) {
+            if (habit.reminderTime === currentTime && Array.isArray(habit.days) && habit.days.includes(dayOfWeek)) {
                 const isDone = completions[habit.id]?.[todayStr] === 'done';
                 if (!isDone) {
                     this.sendNotification(
