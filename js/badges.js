@@ -3,36 +3,11 @@
 // ========================================
 
 const BADGE_DEFINITIONS = [
-    // Streak Badges
-    { id: 'streak_3', name: 'On Fire!', emoji: '🔥', description: '3-day streak on any habit', category: 'streak', rarity: 'common' },
-    { id: 'streak_7', name: '7-Day Warrior', emoji: '⚔️', description: 'Complete a habit 7 days in a row', category: 'streak', rarity: 'uncommon' },
-    { id: 'streak_14', name: 'Two-Week Champion', emoji: '🏅', description: '14-day streak achieved', category: 'streak', rarity: 'uncommon' },
-    { id: 'streak_21', name: 'Habit Formed', emoji: '🧠', description: '21 consecutive days — science says it\'s a habit!', category: 'streak', rarity: 'rare' },
-    { id: 'streak_30', name: 'Discipline Master', emoji: '👑', description: '30-day discipline streak!', category: 'streak', rarity: 'epic' },
-    { id: 'streak_60', name: 'Iron Will', emoji: '🛡️', description: '60 days of pure discipline', category: 'streak', rarity: 'epic' },
-    { id: 'streak_90', name: 'Elite Performer', emoji: '🏆', description: '90-day streak — you are elite!', category: 'streak', rarity: 'legendary' },
-    { id: 'streak_365', name: 'Legend', emoji: '🔱', description: '365 days — a full year of discipline!', category: 'streak', rarity: 'legendary' },
-
-    // Completion Badges
-    { id: 'first_habit', name: 'First Step', emoji: '👣', description: 'Complete your first habit', category: 'completion', rarity: 'common' },
-    { id: 'complete_10', name: 'Getting Going', emoji: '🚀', description: 'Complete 10 habit check-ins total', category: 'completion', rarity: 'common' },
-    { id: 'complete_50', name: 'Momentum', emoji: '💨', description: 'Complete 50 habit check-ins total', category: 'completion', rarity: 'uncommon' },
-    { id: 'complete_100', name: 'Centurion', emoji: '💯', description: 'Complete 100 habit check-ins!', category: 'completion', rarity: 'rare' },
-    { id: 'complete_500', name: 'Unstoppable', emoji: '⚡', description: '500 habit completions!', category: 'completion', rarity: 'epic' },
-
-    // Perfect Day Badges
-    { id: 'perfect_day', name: 'Perfect Day', emoji: '✨', description: 'Complete ALL habits in a single day', category: 'perfect', rarity: 'uncommon' },
-    { id: 'perfect_week', name: 'Perfect Week', emoji: '🌟', description: '7 consecutive perfect days', category: 'perfect', rarity: 'legendary' },
-
-    // Habit Collection Badges
-    { id: 'habits_3', name: 'Committed', emoji: '📋', description: 'Create 3 habits', category: 'collection', rarity: 'common' },
-    { id: 'habits_5', name: 'Dedicated', emoji: '📊', description: 'Create 5 habits', category: 'collection', rarity: 'uncommon' },
-    { id: 'habits_10', name: 'Master Builder', emoji: '🏗️', description: 'Create 10 habits', category: 'collection', rarity: 'rare' },
-
-    // Special Badges
-    { id: 'early_bird', name: 'Early Bird', emoji: '🌅', description: 'Complete a habit before 7am', category: 'special', rarity: 'uncommon' },
-    { id: 'night_owl', name: 'Night Owl', emoji: '🦉', description: 'Complete a habit after 10pm', category: 'special', rarity: 'uncommon' },
-    { id: 'weekend_warrior', name: 'Weekend Warrior', emoji: '🏖️', description: 'Complete habits on Sat & Sun', category: 'special', rarity: 'uncommon' }
+    { id: 'streak_3', nameKey: 'streak_3_name', emoji: '🔥', descKey: 'streak_3_desc', category: 'streak', rarity: 'common' },
+    { id: 'streak_7', nameKey: 'streak_7_name', emoji: '⚔️', descKey: 'streak_7_desc', category: 'streak', rarity: 'uncommon' },
+    { id: 'streak_30', nameKey: 'streak_30_name', emoji: '👑', descKey: 'streak_30_desc', category: 'streak', rarity: 'epic' },
+    { id: 'perfect_day', nameKey: 'perfect_day_name', emoji: '✨', descKey: 'perfect_day_desc', category: 'perfect', rarity: 'uncommon' },
+    { id: 'centurion', nameKey: 'centurion_name', emoji: '💯', descKey: 'centurion_desc', category: 'streak', rarity: 'legendary' }
 ];
 
 const RARITY_COLORS = {

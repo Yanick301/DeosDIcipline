@@ -44,20 +44,9 @@ const QuoteManager = {
     getTodayQuote() {
         const today = new Date();
         const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
-        const index = dayOfYear % QUOTES.length;
-        return QUOTES[index];
-    },
-
-    getRandomQuote() {
-        return QUOTES[Math.floor(Math.random() * QUOTES.length)];
-    },
-
-    getQuoteByIndex(index) {
-        return QUOTES[index % QUOTES.length];
-    },
-
-    getAllQuotes() {
-        return QUOTES;
+        const keys = ['q1', 'q2', 'q3', 'q4'];
+        const key = keys[dayOfYear % keys.length];
+        return { text: i18n.t(key), author: 'DeOs' };
     }
 };
 

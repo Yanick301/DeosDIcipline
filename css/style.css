@@ -295,7 +295,16 @@ textarea {
 }
 
 .tab-item.active {
-  color: var(--red);
+  color: #FF385C;
+}
+
+.tab-item.active svg {
+  stroke: #FF385C;
+  transform: translateY(-2px);
+}
+
+.tab-item.active span {
+  font-weight: 600;
 }
 
 .tab-item.active svg {
@@ -518,7 +527,7 @@ textarea {
   font-family: Georgia, serif;
   line-height: 1;
   pointer-events: none;
-  select: none;
+  user-select: none;
 }
 
 .quote-label {
@@ -575,16 +584,19 @@ textarea {
    HABIT CARD (Airbnb listing row style)
 ────────────────────────────────────────── */
 .hcard {
-  background: var(--surface-1);
-  border-radius: var(--r-lg);
-  padding: 14px 14px;
-  margin-bottom: 10px;
+  background: rgba(28, 28, 30, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 0.5px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--r-md);
+  padding: 16px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   cursor: pointer;
-  transition: transform var(--dur-fast) var(--ease-out),
-    background var(--dur-fast) var(--ease-out);
+  transition: transform var(--dur-mid) var(--spring),
+    background var(--dur-mid) var(--ease-out);
   position: relative;
   overflow: hidden;
 }
@@ -613,15 +625,25 @@ textarea {
 }
 
 .hcard-icon {
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   border-radius: 14px;
-  flex-shrink: 0;
+  background: var(--habit-color-light);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  background: var(--habit-color-light, rgba(255, 56, 92, 0.12));
+  flex-shrink: 0;
+  transition: transform 0.3s var(--spring);
+}
+
+.hcard-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--habit-color);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
 }
 
 .hcard-body {
@@ -921,17 +943,26 @@ textarea {
   aspect-ratio: 1;
   border-radius: var(--r-sm);
   background: var(--surface-2);
-  font-size: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform var(--dur-fast) var(--spring),
     background var(--dur-fast);
+  color: var(--text-2);
+}
+
+.ibtn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
 }
 
 .ibtn.sel {
-  background: var(--red-light);
-  outline: 2px solid var(--red);
+  background: var(--habit-color-light, var(--red-light));
+  color: var(--habit-color, var(--red));
+  outline: 2px solid var(--habit-color, var(--red));
 }
 
 .ibtn:active {

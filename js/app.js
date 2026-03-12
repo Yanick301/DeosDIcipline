@@ -13,6 +13,10 @@ const App = {
     selColor: '#FF385C',
     detailId: null,
     toastTimer: null,
+    getIconSvg(iconId) {
+        const ic = HABIT_ICONS.find(i => i.id === iconId) || HABIT_ICONS[0];
+        return `<svg viewBox="0 0 24 24"><path d="${ic.path}"/></svg>`;
+    },
 
     // ─────────────────── BOOT ───────────────────
     init() {
@@ -126,10 +130,11 @@ const App = {
         document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
         const el = document.getElementById(`screen-${s}`);
         if (el) { el.classList.add('active'); this.current = s; }
-        // Tab bar active state
-        document.querySelectorAll('.tab-item[data-s]').forEach(n =>
-            n.classList.toggle('active', n.dataset.s === s)
-        );
+        // Tab bar active state — ensure data-s matches the screen ID
+        document.querySelectorAll('.tab-item').forEach(n => {
+            const screenId = n.getAttribute('data-s');
+            n.classList.toggle('active', screenId === s);
+        });
     },
 
     renderScreen(s) {
@@ -162,7 +167,8 @@ const App = {
 
         // Header
         this.setText('greeting-text', this.greeting(now.getHours()));
-        this.setText('date-text', now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }));
+        const lang = i18n.lang === 'fr' ? 'fr-FR' : 'en-US';
+        this.setText('date-text', now.toLocaleDateString(lang, { weekday: 'long', month: 'long', day: 'numeric' }));
 
         // Progress ring
         this.animateRing('#ring-fill', stats.today.progress, 45);
@@ -236,7 +242,7 @@ const App = {
     <div class="hcard ${status || ''}" style="--habit-color:${col};--habit-color-light:${col}18"
       onclick="event.target.closest('.hcard-actions') || App.nav('habit/${h.id}')">
       <div class="hcard-status-bar"></div>
-      <div class="hcard-icon">${h.icon}</div>
+      <div class="hcard-icon">${this.getIconSvg(h.icon)}</div>
       <div class="hcard-body">
         <p class="hcard-name">${h.name}</p>
         <div class="hcard-meta">
@@ -319,7 +325,7 @@ const App = {
         const g = document.getElementById('icon-grid');
         if (!g) return;
         g.innerHTML = HABIT_ICONS.map(ic =>
-            `<button class="ibtn ${ic === this.selIcon ? 'sel' : ''}" onclick="App.pickIcon('${ic}')">${ic}</button>`
+            `<button class="ibtn ${ic.id === this.selIcon ? 'sel' : ''}" onclick="App.pickIcon('${ic.id}')" style="--habit-color:${this.selColor}">${this.getIconSvg(ic.id)}</button>`
         ).join('');
     },
 
@@ -368,7 +374,7 @@ const App = {
 
     updateIconPreview() {
         const d = document.getElementById('icon-display');
-        if (d) { d.textContent = this.selIcon; d.style.background = this.selColor + '20'; }
+        if (d) { d.innerHTML = this.getIconSvg(this.selIcon); d.style.background = this.selColor + '20'; d.style.color = this.selColor; }
     },
 
     saveHabit() {
@@ -408,7 +414,9 @@ const App = {
         if (!stats) { this.nav('home'); return; }
         const { habit, done, completionRate, streak, bestStreak, last7Days } = stats;
 
-        this.setText('d-icon-box', habit.icon);
+        this.setText('d-icon-box', ''); // Clear and then append SVG
+        const iconBox = document.getElementById('d-icon-box');
+        if (iconBox) { iconBox.innerHTML = this.getIconSvg(habit.icon); iconBox.style.color = habit.color; }
         this.setText('d-name', habit.name);
         this.setText('d-desc', habit.description || i18n.t('notes_placeholder'));
         this.animateNum('d-streak', streak);
@@ -556,7 +564,7 @@ const App = {
         c.innerHTML = ranked.map((h, i) => `
       <div class="lb-item" onclick="App.nav('habit/${h.id}')">
         <span class="lb-rank ${medals[i] || ''}">${i + 1}</span>
-        <div class="lb-icon" style="background:${h.color}18">${h.icon}</div>
+        <div class="lb-icon" style="background:${h.color}18;--habit-color:${h.color}">${this.getIconSvg(h.icon)}</div>
         <div class="lb-info">
           <p class="lb-name">${h.name}</p>
           <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${h.rate}%;background:${h.color}"></div></div>
@@ -576,9 +584,9 @@ const App = {
         const all = [...unlocked, ...locked];
         c.innerHTML = all.map(b => {
             const col = BadgeManager.getRarityColor(b.rarity);
-            return `<div class="badge-card ${b.earned ? 'earned' : ''}" title="${b.description}">
+            return `<div class="badge-card ${b.earned ? 'earned' : ''}" title="${i18n.t(b.descKey)}">
         <span class="badge-em">${b.earned ? b.emoji : '🔒'}</span>
-        <p class="badge-name">${b.name}</p>
+        <p class="badge-name">${i18n.t(b.nameKey)}</p>
         ${b.earned ? `<p class="badge-rarity" style="color:${col}">${b.rarity}</p>` : ''}
       </div>`;
         }).join('');
@@ -673,8 +681,8 @@ const App = {
         const t = document.getElementById('badge-toast');
         if (!t) return;
         this.setText('bt-emoji', badge.emoji);
-        this.setText('bt-name', badge.name);
-        this.setText('bt-desc', badge.description);
+        this.setText('bt-name', i18n.t(badge.nameKey));
+        this.setText('bt-desc', i18n.t(badge.descKey));
         const r = document.getElementById('bt-rarity');
         if (r) { r.textContent = badge.rarity.toUpperCase(); r.style.color = col; }
         t.classList.add('active');
