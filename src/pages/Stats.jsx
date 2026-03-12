@@ -98,37 +98,87 @@ const Stats = () => {
                 ))}
             </div>
 
-            {/* Week View Placeholder */}
+            {/* Week View */}
             <section className="space-y-4">
                 <h2 className="text-xs font-black uppercase tracking-[0.2em] text-text-tertiary px-1">
                     {t('weekly_activity')}
                 </h2>
-                <div className="glass-card h-32 flex items-end justify-around p-4 gap-2">
-                    {[10, 40, 90, 60, 30, 80, 50].map((v, i) => (
-                        <div key={i} className="flex flex-col items-center gap-2 h-full justify-end group">
-                            <motion.div
-                                initial={{ height: 0 }}
-                                animate={{ height: `${v}%` }}
-                                className={`w-8 rounded-full ${i === 2 ? 'bg-airbnb' : 'bg-white/10'} transition-all`}
-                            />
-                            <span className={`text-[10px] font-bold ${i === 2 ? 'text-airbnb' : 'text-text-tertiary'}`}>
-                                {['S', 'M', 'T', 'W', 'T', 'F', 'S'][i]}
-                            </span>
-                        </div>
-                    ))}
+                <div className="glass-card h-40 flex items-end justify-around p-6 gap-2">
+                    {(() => {
+                        const days = [];
+                        const today = new Date();
+                        for (let i = 6; i >= 0; i--) {
+                            const d = new Date(today);
+                            d.setDate(today.getDate() - i);
+                            const ds = d.toISOString().split('T')[0];
+                            const dayName = ['S', 'M', 'T', 'W', 'T', 'F', 'S'][d.getDay()];
+
+                            // Count done habits for this day
+                            const count = Object.values(completions).filter(h => h[ds] === 'done').length;
+                            const totalHabitsOnDay = habits.filter(h => h.days.includes(d.getDay())).length;
+                            const percentage = totalHabitsOnDay > 0 ? (count / totalHabitsOnDay) * 100 : 0;
+
+                            days.push({ name: dayName, percentage, isToday: i === 0 });
+                        }
+                        return days.map((day, i) => (
+                            <div key={i} className="flex flex-col items-center gap-2 h-full justify-end flex-1">
+                                <div className="relative w-full flex flex-col justify-end h-full">
+                                    <motion.div
+                                        initial={{ height: 0 }}
+                                        animate={{ height: `${day.percentage}%` }}
+                                        className={`w-full rounded-t-lg ${day.isToday ? 'bg-airbnb shadow-[0_0_15px_rgba(255,56,92,0.4)]' : 'bg-white/10'}`}
+                                    />
+                                </div>
+                                <span className={`text-[10px] font-black ${day.isToday ? 'text-airbnb' : 'text-text-tertiary'}`}>
+                                    {day.name}
+                                </span>
+                            </div>
+                        ));
+                    })()}
                 </div>
             </section>
 
-            {/* Heatmap Placeholder */}
+            {/* Heatmap */}
             <section className="space-y-4">
                 <h2 className="text-xs font-black uppercase tracking-[0.2em] text-text-tertiary px-1">
                     {t('heatmap')}
                 </h2>
                 <div className="glass-card p-4">
-                    <div className="grid grid-cols-13 gap-1">
-                        {Array.from({ length: 52 }).map((_, i) => (
-                            <div key={i} className="w-full aspect-square bg-white/5 rounded-[2px]" />
-                        ))}
+                    <div className="grid grid-cols-7 gap-1 sm:grid-cols-13 sm:gap-1.5 overflow-x-auto no-scrollbar">
+                        {(() => {
+                            const cells = [];
+                            const today = new Date();
+                            for (let i = 90; i >= 0; i--) {
+                                const d = new Date(today);
+                                d.setDate(today.getDate() - i);
+                                const ds = d.toISOString().split('T')[0];
+
+                                const count = Object.values(completions).filter(h => h[ds] === 'done').length;
+                                let opacity = 'bg-white/5';
+                                if (count > 0) opacity = 'bg-airbnb/20';
+                                if (count > 2) opacity = 'bg-airbnb/50';
+                                if (count > 4) opacity = 'bg-airbnb';
+
+                                cells.push({ id: ds, opacity });
+                            }
+                            return cells.map(cell => (
+                                <div
+                                    key={cell.id}
+                                    className={`w-full aspect-square rounded-[2px] ${cell.opacity} transition-colors duration-500`}
+                                    title={cell.id}
+                                />
+                            ));
+                        })()}
+                    </div>
+                    <div className="mt-3 flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-text-tertiary opacity-50">
+                        <span>Less</span>
+                        <div className="flex gap-1">
+                            <div className="w-2 h-2 bg-white/5 rounded-[1px]" />
+                            <div className="w-2 h-2 bg-airbnb/20 rounded-[1px]" />
+                            <div className="w-2 h-2 bg-airbnb/50 rounded-[1px]" />
+                            <div className="w-2 h-2 bg-airbnb rounded-[1px]" />
+                        </div>
+                        <span>More</span>
                     </div>
                 </div>
             </section>
