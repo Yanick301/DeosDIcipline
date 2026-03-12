@@ -56,8 +56,8 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
             <nav className="
                 fixed z-50 transition-all duration-500
                 /* Mobile: Bottom Bar */
-                bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[600px] h-20 
-                flex flex-row items-center justify-between px-6 
+                bottom-6 left-1/2 -translate-x-1/2 w-[96%] max-w-[600px] h-20 
+                flex flex-row items-center justify-between px-3 
                 bg-surface-200/40 backdrop-blur-3xl border border-white/10 rounded-[32px] 
                 shadow-[0_20px_50px_rgba(0,0,0,0.5)]
                 
@@ -79,7 +79,7 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
                 {tabs.map((tab) => {
                     if (tab.isFab) {
                         return (
-                            <div key="add-fab" className="relative md:static md:w-full lg:px-4">
+                            <div key="add-fab" className="relative w-14 shrink-0 md:w-full lg:px-4">
                                 <motion.button
                                     whileHover={{ scale: 1.05, y: -2 }}
                                     whileTap={{ scale: 0.95 }}
@@ -109,7 +109,7 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
                             className={`
                                 flex flex-col items-center justify-center transition-all duration-300
                                 /* Mobile */
-                                relative min-w-[44px] h-full
+                                relative flex-1 h-full
                                 /* Desktop */
                                 md:w-full md:h-14 md:rounded-2xl
                                 /* Large Desktop */
@@ -129,7 +129,7 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
                                 `}
                             >
                                 <tab.icon
-                                    size={24}
+                                    size={mdAndUp ? 24 : 20}
                                     strokeWidth={isActive ? 2.5 : 2}
                                 />
                                 {isActive && !mdAndUp && (
