@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, BarChart2, Award, User, Plus, Users, Zap, Book } from 'lucide-react';
+import { Home, BarChart2, Award, User, Plus, Users, Timer, Book } from 'lucide-react';
 import { useHabits } from '../context/HabitContext';
 
 const Layout = ({ children, activeTab, setActiveTab }) => {
@@ -8,10 +8,10 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
 
     const tabs = [
         { id: 'home', icon: Home, label: t('home') },
+        { id: 'timer', icon: Timer, label: t('timer_nav') || 'Focus' },
         { id: 'stats', icon: BarChart2, label: t('stats') },
-        { id: 'community', icon: Users, label: t('community') },
         { id: 'add', icon: Plus, isFab: true },
-        { id: 'programs', icon: Zap, label: t('programs') },
+        { id: 'community', icon: Users, label: t('community') },
         { id: 'journal', icon: Book, label: t('journal') },
         { id: 'profile', icon: User, label: t('profile') },
     ];

@@ -10,6 +10,7 @@ import AddHabit from './pages/AddHabit';
 import Community from './pages/Community';
 import Programs from './pages/Programs';
 import Journal from './pages/Journal';
+import FocusTimer from './components/FocusTimer';
 import './index.css';
 
 const AppContent = () => {
@@ -28,6 +29,7 @@ const AppContent = () => {
     switch (activeTab) {
       case 'home': return <Home onEdit={(id) => handleNav('add', id)} />;
       case 'stats': return <Stats />;
+      case 'timer': return <FocusTimer />;
       case 'journal': return <Journal />;
       case 'community': return <Community />;
       case 'programs': return <Programs />;

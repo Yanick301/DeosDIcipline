@@ -40,18 +40,30 @@ const Home = ({ onEdit }) => {
             {/* Header */}
             <header className="flex justify-between items-end">
                 <div>
-                    <span className="text-airbnb text-[10px] font-black uppercase tracking-[0.4em] mb-2 block">
+                    <span className="text-gold text-[10px] font-black uppercase tracking-[0.4em] mb-2 block opacity-70">
                         {userId}
                     </span>
                     <h1 className="text-4xl font-black tracking-tighter text-white mb-2 leading-none">
                         {greeting(new Date().getHours())}
                     </h1>
-                    <p className="text-text-tertiary text-xs font-bold tracking-wide uppercase opacity-60">
+                    <p className="text-text-tertiary text-xs font-bold tracking-wide uppercase opacity-40">
                         {formattedDate}
                     </p>
                 </div>
                 <div className="relative w-20 h-20">
-                    <ProgressRing progress={progress} />
+                    <svg className="w-full h-full transform -rotate-90">
+                        <circle cx="40" cy="40" r="36" className="stroke-white/5 fill-none" strokeWidth="4" />
+                        <motion.circle
+                            cx="40" cy="40" r="36"
+                            className="stroke-gold fill-none"
+                            strokeWidth="4"
+                            strokeDasharray={226.2}
+                            initial={{ strokeDashoffset: 226.2 }}
+                            animate={{ strokeDashoffset: 226.2 - (progress / 100) * 226.2 }}
+                            transition={{ duration: 1.5, ease: "easeOut" }}
+                            strokeLinecap="round"
+                        />
+                    </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                         <span className="text-xl font-black text-white leading-none">{progress}%</span>
                     </div>
@@ -64,9 +76,9 @@ const Home = ({ onEdit }) => {
             {/* Stats Quick Look */}
             <div className="grid grid-cols-3 gap-3">
                 {[
-                    { label: t('streak'), value: calculateMasterStreak(), color: 'orange', icon: '🔥' },
-                    { label: t('done'), value: doneHabits.length, color: 'airbnb', icon: '✅' },
-                    { label: t('score'), value: level, color: 'green', icon: '🔱' }
+                    { label: t('streak'), value: calculateMasterStreak(), color: 'gold', icon: '🔥' },
+                    { label: t('done'), value: doneHabits.length, color: 'gold', icon: '✅' },
+                    { label: t('score'), value: level, color: 'gold', icon: '🔱' }
                 ].map((stat, i) => (
                     <motion.div
                         key={i}
@@ -86,7 +98,7 @@ const Home = ({ onEdit }) => {
                         <span className="text-[9px] font-black text-white/30 mb-2 uppercase tracking-[0.2em] leading-none z-10">
                             {stat.label}
                         </span>
-                        <span className={`text-2xl font-black z-10 ${stat.color === 'airbnb' ? 'text-airbnb' : stat.color === 'orange' ? 'text-orange-400' : 'text-green-400'}`}>
+                        <span className={`text-2xl font-black z-10 text-gold-light`}>
                             {stat.value}
                         </span>
                     </motion.div>

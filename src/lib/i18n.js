@@ -93,6 +93,7 @@ export const TRANSLATIONS = {
         programs: 'Programs',
         profile: 'Profile',
         journal: 'Journal',
+        timer_nav: 'Focus',
         // Community
         chat_title: 'Global Chat',
         chat_placeholder: 'Say something motivating...',
@@ -220,6 +221,7 @@ export const TRANSLATIONS = {
         programs: 'Programmes',
         profile: 'Profil',
         journal: 'Journal',
+        timer_nav: 'Focus',
         // Community
         chat_title: 'Chat Global',
         chat_placeholder: 'Motive la meute...',

@@ -8,7 +8,7 @@ const HabitCard = ({ habit, status, dateStr, streak, onComplete, onNav }) => {
     const icon = HABIT_ICONS.find(i => i.id === habit.icon) || HABIT_ICONS[0];
     const isDone = status === 'done';
     const isSkipped = status === 'skipped';
-    const color = habit.color || '#FF385C';
+    const color = habit.color === '#FF385C' ? 'var(--color-gold)' : (habit.color || 'var(--color-gold)');
 
     return (
         <motion.div
