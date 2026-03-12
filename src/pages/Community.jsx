@@ -93,21 +93,28 @@ const Community = () => {
                     className="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar"
                 >
                     <AnimatePresence initial={false}>
-                        {messages.map((msg) => (
-                            <motion.div
-                                key={msg.id}
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                className={`flex flex-col ${msg.userId === userId ? 'items-end' : 'items-start'}`}
-                            >
-                                <span className="text-[10px] font-black text-text-tertiary uppercase tracking-widest mb-1 px-2">
-                                    {msg.user} • {msg.time}
-                                </span>
-                                <div className={`px-4 py-3 rounded-2xl text-sm font-medium max-w-[85%] ${msg.userId === userId ? 'bg-airbnb text-white rounded-tr-none' : 'bg-white/5 text-white rounded-tl-none'}`}>
-                                    {msg.text}
-                                </div>
-                            </motion.div>
-                        ))}
+                        {messages.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center h-full space-y-4 opacity-20">
+                                <span className="text-6xl">💬</span>
+                                <p className="text-sm font-black uppercase tracking-widest">{t('chat_no_messages')}</p>
+                            </div>
+                        ) : (
+                            messages.map((msg) => (
+                                <motion.div
+                                    key={msg.id}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    className={`flex flex-col ${msg.userId === userId ? 'items-end' : 'items-start'}`}
+                                >
+                                    <span className="text-[10px] font-black text-text-tertiary uppercase tracking-widest mb-1 px-2">
+                                        {msg.user} • {msg.time}
+                                    </span>
+                                    <div className={`px-4 py-3 rounded-2xl text-sm font-medium max-w-[85%] ${msg.userId === userId ? 'bg-airbnb text-white rounded-tr-none' : 'bg-white/5 text-white rounded-tl-none'}`}>
+                                        {msg.text}
+                                    </div>
+                                </motion.div>
+                            ))
+                        )}
                     </AnimatePresence>
                 </div>
 
