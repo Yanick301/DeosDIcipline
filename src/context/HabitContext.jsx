@@ -47,12 +47,36 @@ export const HabitProvider = ({ children }) => {
     }, [lang]);
 
     useEffect(() => {
-        // Notification loop - check every 60 seconds
+        // Notification loop - check every 60 seconds (in-tab fallback)
         const interval = setInterval(() => {
             NotificationService.checkReminders(habits, completions, t);
         }, 60000);
 
-        return () => clearInterval(interval);
+        // Sync habits to Service Worker for background alarms
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'SCHEDULE_ALARMS',
+                habits: habits
+            });
+        }
+
+        // Listener for messages from the Service Worker
+        const handleSwMessage = (event) => {
+            if (event.data?.type === 'MARK_HABIT_DONE' && event.data?.habitId) {
+                const todayStr = new Date().toISOString().split('T')[0];
+                toggleCompletion(event.data.habitId, todayStr, 'done');
+            }
+        };
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', handleSwMessage);
+        }
+
+        return () => {
+            clearInterval(interval);
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.removeEventListener('message', handleSwMessage);
+            }
+        };
     }, [habits, completions, t]);
 
     const awardXp = (amount) => {

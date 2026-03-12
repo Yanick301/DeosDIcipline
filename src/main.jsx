@@ -8,3 +8,14 @@ createRoot(document.getElementById('root')).render(
     <App />
   </StrictMode>,
 )
+
+// Register Service Worker for background notifications
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      console.log('[DeOs] Service Worker registered:', reg.scope);
+    }).catch(err => {
+      console.warn('[DeOs] Service Worker registration failed:', err);
+    });
+  });
+}
