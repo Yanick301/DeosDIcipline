@@ -17,8 +17,13 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
     ];
 
     return (
-        <div className="flex flex-col min-h-screen bg-surface-100 text-white font-sans selection:bg-airbnb/30">
-            <main className="flex-1 pb-32 max-w-5xl mx-auto w-full px-4 pt-12">
+        <div className="flex flex-col min-h-screen bg-surface-100 text-white font-sans selection:bg-airbnb/30 relative overflow-hidden">
+            {/* Magnificent Background Effects */}
+            <div className="bg-noise" />
+            <div className="ambient-glow" />
+            <div className="fixed top-0 left-0 w-full h-32 bg-gradient-to-b from-obsidian to-transparent pointer-events-none z-10 opacity-60" />
+
+            <main className="flex-1 pb-40 max-w-5xl mx-auto w-full px-6 pt-16 relative z-10">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={activeTab}

@@ -66,12 +66,11 @@ const Stats = () => {
         i === 0 ? `M ${p.x},${p.y}` : `${acc} L ${p.x},${p.y}`, "");
 
     return (
-        <div className="space-y-10 pb-32">
-            <header className="flex justify-between items-end">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-black text-white">{t('statistics')}</h1>
-                    <p className="text-gold text-[10px] font-black uppercase tracking-[0.4em]">{userId}</p>
-                </div>
+        <div className="space-y-12 pb-32">
+            <header className="flex flex-col space-y-2">
+                <h1 className="text-4xl font-black text-white tracking-tighter">{t('statistics')}</h1>
+                <p className="text-gold text-[10px] font-black uppercase tracking-[0.4em] opacity-60">Analytics of Ascension</p>
+                <div className="h-0.5 w-12 bg-gold/30 rounded-full mt-4" />
             </header>
 
             {/* Top Section: Level Gauge & Quick Stats */}

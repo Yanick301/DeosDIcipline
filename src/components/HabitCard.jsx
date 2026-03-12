@@ -17,41 +17,36 @@ const HabitCard = ({ habit, status, dateStr, streak, onComplete, onNav }) => {
             layout
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            whileHover={{ y: -2 }}
-            className={`relative overflow-hidden glass-card mb-4 flex items-center gap-4 cursor-pointer ${isDone ? 'opacity-60' : ''} ${isSkipped ? 'border-orange-500/30' : ''}`}
+            whileHover={{ y: -4, borderColor: 'rgba(212, 175, 55, 0.3)' }}
+            className={`relative overflow-hidden glass-premium mb-4 flex items-center gap-5 p-5 cursor-pointer transition-colors duration-500 ${isDone ? 'opacity-40 grayscale-[0.5]' : ''} ${isSkipped ? 'border-orange-500/30' : ''}`}
             onClick={(e) => {
                 if (e.target.closest('.habit-actions')) return;
                 onNav(habit.id);
             }}
         >
-            {/* Status Bar */}
+            {/* Medallion / Icon Container */}
             <div
-                className="absolute left-0 top-0 bottom-0 w-1.5"
-                style={{ backgroundColor: isSkipped ? '#FB923C' : color }}
-            />
-
-            {/* Icon */}
-            <div
-                className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: `${color}15`, color: color }}
+                className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 relative group-hover:scale-110 transition-transform duration-500"
+                style={{ backgroundColor: `${color}10`, color: color, border: `1px solid ${color}20` }}
             >
-                <svg viewBox="0 0 24 24" className="w-6 h-6 fill-none stroke-current stroke-2">
+                <div className="absolute inset-0 blur-xl opacity-20" style={{ backgroundColor: color }} />
+                <svg viewBox="0 0 24 24" className="w-7 h-7 fill-none stroke-current stroke-2 relative z-10">
                     <path d={icon.path} strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
             </div>
 
             {/* Body */}
-            <div className="flex-1 min-w-0">
-                <h3 className="text-base font-semibold text-white truncate">{habit.name}</h3>
-                <div className="flex items-center gap-3 mt-1">
+            <div className="flex-1 min-w-0 space-y-1.5">
+                <h3 className="text-lg font-black text-white truncate tracking-tight">{habit.name}</h3>
+                <div className="flex items-center gap-3">
                     {streak > 0 && (
-                        <span className="flex items-center gap-1 text-[11px] font-bold text-orange-400 bg-orange-400/10 px-2 py-0.5 rounded-full">
-                            <Flame size={12} strokeWidth={2.5} /> {streak}d
+                        <span className="flex items-center gap-1.5 text-[9px] font-black text-gold gold-glow bg-gold/10 border border-gold/20 px-2.5 py-1 rounded-full uppercase tracking-widest">
+                            <Flame size={12} fill="currentColor" /> {streak}d Streak
                         </span>
                     )}
                     {habit.reminderTime && (
-                        <span className="flex items-center gap-1 text-[11px] font-bold text-text-secondary bg-white/5 px-2 py-0.5 rounded-full">
-                            <Clock size={12} strokeWidth={2.5} /> {habit.reminderTime}
+                        <span className="flex items-center gap-1.5 text-[9px] font-black text-text-tertiary bg-white/5 border border-white/5 px-2.5 py-1 rounded-full uppercase tracking-widest leading-none">
+                            <Clock size={12} /> {habit.reminderTime}
                         </span>
                     )}
                 </div>

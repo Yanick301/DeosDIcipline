@@ -39,33 +39,32 @@ const Home = ({ onEdit }) => {
         <div className="space-y-8 pb-32">
             {/* Header */}
             <header className="flex justify-between items-end">
-                <div>
-                    <span className="text-gold text-[10px] font-black uppercase tracking-[0.4em] mb-2 block opacity-70">
-                        {userId}
+                <div className="space-y-1">
+                    <span className="text-gold text-[10px] font-black uppercase tracking-[0.4em] mb-1 block opacity-60">
+                        {userId} • {formattedDate}
                     </span>
-                    <h1 className="text-4xl font-black tracking-tighter text-white mb-2 leading-none">
+                    <h1 className="text-5xl font-black tracking-tighter text-white leading-none">
                         {greeting(new Date().getHours())}
                     </h1>
-                    <p className="text-text-tertiary text-xs font-bold tracking-wide uppercase opacity-40">
-                        {formattedDate}
-                    </p>
                 </div>
-                <div className="relative w-20 h-20">
-                    <svg className="w-full h-full transform -rotate-90">
-                        <circle cx="40" cy="40" r="36" className="stroke-white/5 fill-none" strokeWidth="4" />
+                <div className="relative w-24 h-24 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gold/5 blur-2xl rounded-full" />
+                    <svg className="w-full h-full transform -rotate-90 relative z-10">
+                        <circle cx="48" cy="48" r="42" className="stroke-white/5 fill-none" strokeWidth="3" />
                         <motion.circle
-                            cx="40" cy="40" r="36"
+                            cx="48" cy="48" r="42"
                             className="stroke-gold fill-none"
-                            strokeWidth="4"
-                            strokeDasharray={226.2}
-                            initial={{ strokeDashoffset: 226.2 }}
-                            animate={{ strokeDashoffset: 226.2 - (progress / 100) * 226.2 }}
-                            transition={{ duration: 1.5, ease: "easeOut" }}
+                            strokeWidth="3"
+                            strokeDasharray={263.9}
+                            initial={{ strokeDashoffset: 263.9 }}
+                            animate={{ strokeDashoffset: 263.9 - (progress / 100) * 263.9 }}
+                            transition={{ duration: 2, ease: "circOut" }}
                             strokeLinecap="round"
                         />
                     </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-xl font-black text-white leading-none">{progress}%</span>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
+                        <span className="text-2xl font-black text-white leading-none">{progress}%</span>
+                        <span className="text-[7px] font-black text-gold/40 uppercase tracking-widest mt-1">Done</span>
                     </div>
                 </div>
             </header>
