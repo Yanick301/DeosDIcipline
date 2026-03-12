@@ -6,7 +6,7 @@ import ProgressRing from '../components/ProgressRing';
 import QuoteCard from '../components/QuoteCard';
 
 const Home = () => {
-    const { habits, completions, toggleCompletion, t, lang, level, xp } = useHabits();
+    const { habits, completions, toggleCompletion, t, lang, level, xp, userId } = useHabits();
 
     const today = new Date().getDay();
     const dateStr = new Date().toISOString().split('T')[0];
@@ -40,9 +40,12 @@ const Home = () => {
             {/* Header */}
             <header className="flex justify-between items-end">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight text-white mb-1">
+                    <h1 className="text-3xl font-black tracking-tight text-white mb-1">
                         {greeting(new Date().getHours())}
                     </h1>
+                    <p className="text-airbnb text-[10px] font-black uppercase tracking-widest mb-1">
+                        {userId}
+                    </p>
                     <p className="text-text-secondary text-sm font-medium capitalize">
                         {formattedDate}
                     </p>

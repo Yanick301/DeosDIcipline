@@ -12,8 +12,19 @@ export const HabitProvider = ({ children }) => {
     const [onboardDone, setOnboardDone] = useState(false);
     const [xp, setXp] = useState(0);
     const [level, setLevel] = useState(1);
+    const [userId, setUserId] = useState('');
 
     useEffect(() => {
+        // One-time reset check for version 4_reset
+        const hasReset = localStorage.getItem('deos_v4_reset_done');
+        if (!hasReset) {
+            DB.clearAll();
+            localStorage.setItem('deos_v4_reset_done', 'true');
+            window.location.reload();
+            return;
+        }
+
+        setUserId(DB.ensureUserId());
         setHabits(DB.getHabits());
         setCompletions(DB.getCompletions());
         const s = DB.getSettings();
@@ -92,7 +103,7 @@ export const HabitProvider = ({ children }) => {
             completions, toggleCompletion,
             settings, lang, changeLang, t,
             onboardDone, finishOnboarding,
-            xp, level
+            xp, level, userId
         }}>
             {children}
         </HabitContext.Provider>

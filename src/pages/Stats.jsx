@@ -4,7 +4,7 @@ import { useHabits } from '../context/HabitContext';
 import { Target, TrendingUp, Calendar, Zap } from 'lucide-react';
 
 const Stats = () => {
-    const { t, level, xp } = useHabits();
+    const { t, level, xp, userId } = useHabits();
 
     const nextLevelXp = level * 1000;
     const currentLevelBaseXp = (level - 1) * 1000;
@@ -13,8 +13,13 @@ const Stats = () => {
     return (
         <div className="space-y-8 pb-32">
             <header>
-                <h1 className="text-3xl font-black text-white">{t('statistics')}</h1>
-                <p className="text-text-secondary text-sm font-medium">{t('weekly_activity')}</p>
+                <div className="flex justify-between items-start">
+                    <div>
+                        <h1 className="text-3xl font-black text-white">{t('statistics')}</h1>
+                        <p className="text-airbnb text-[10px] font-black uppercase tracking-widest">{userId}</p>
+                    </div>
+                    <p className="text-text-secondary text-sm font-medium">{t('weekly_activity')}</p>
+                </div>
             </header>
 
             {/* Main Score Card */}

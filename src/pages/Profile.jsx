@@ -29,6 +29,9 @@ const Profile = () => {
                     </div>
                 </div>
                 <h1 className="text-2xl font-black text-white tracking-tight">DeOs Warrior</h1>
+                <p className="text-text-tertiary text-[10px] font-black uppercase tracking-[0.3em] mt-1 bg-white/5 px-2 py-0.5 rounded-full">
+                    {userId}
+                </p>
                 <div className="w-full max-w-[200px] mt-4 space-y-2">
                     <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-text-tertiary">
                         <span>{xp} XP</span>
