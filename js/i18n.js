@@ -211,6 +211,8 @@ const TRANSLATIONS = {
         streak_30_desc: 'Un mois de constance',
         perfect_day_name: 'Journée Parfaite',
         perfect_day_desc: 'Toutes les habitudes terminées',
+        centurion_name: 'Centurion',
+        centurion_desc: 'Réussir 100 check-ins',
         // Quotes
         q1: 'La discipline est le pont entre les objectifs et l\'accomplissement.',
         q2: 'Nous sommes ce que nous faisons de manière répétée. L\'excellence est une habitude.',
