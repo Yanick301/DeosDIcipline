@@ -44,7 +44,10 @@ const FocusTimer = () => {
         return () => clearInterval(interval);
     }, [isActive, timeLeft]);
 
-    const toggleTimer = () => setIsActive(!isActive);
+    const toggleTimer = () => {
+        SoundService.init();
+        setIsActive(!isActive);
+    };
 
     const resetTimer = () => {
         setIsActive(false);

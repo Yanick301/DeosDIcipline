@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, SkipForward, Flame, Clock } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { SoundService } from '../services/SoundService';
+import { HapticService } from '../services/HapticService';
 import { HABIT_ICONS } from '../lib/constants';
 
 const HabitCard = ({ habit, status, dateStr, streak, onComplete, onNav }) => {
@@ -71,6 +73,8 @@ const HabitCard = ({ habit, status, dateStr, streak, onComplete, onNav }) => {
                             whileTap={{ scale: 0.8 }}
                             onClick={(e) => {
                                 e.stopPropagation();
+                                HapticService.light();
+                                SoundService.play('success');
                                 confetti({
                                     particleCount: 100,
                                     spread: 70,

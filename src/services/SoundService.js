@@ -12,9 +12,12 @@ class SoundServiceImpl {
     }
 
     async play(type) {
-        this.stop();
         this.init();
         if (this.ctx.state === 'suspended') await this.ctx.resume();
+        this.stop();
+
+        if (type === 'success') return this.playSuccess();
+        if (type === 'levelUp') return this.playLevelUp();
 
         const bufferSize = 2 * this.ctx.sampleRate;
         const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
@@ -32,7 +35,6 @@ class SoundServiceImpl {
         this.gain.gain.setValueAtTime(0, this.ctx.currentTime);
         this.gain.gain.linearRampToValueAtTime(0.05, this.ctx.currentTime + 1);
 
-        // Simple filtering for different types
         const filter = this.ctx.createBiquadFilter();
         if (type === 'rain') {
             filter.type = 'lowpass';
@@ -44,9 +46,6 @@ class SoundServiceImpl {
         } else if (type === 'forest') {
             filter.type = 'lowpass';
             filter.frequency.value = 800;
-        } else {
-            filter.type = 'lowpass';
-            filter.frequency.value = 2000; // Brown/White noise-ish
         }
 
         this.node.connect(filter);
@@ -55,15 +54,50 @@ class SoundServiceImpl {
         this.node.start();
     }
 
+    playSuccess() {
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.1);
+
+        g.gain.setValueAtTime(0, this.ctx.currentTime);
+        g.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + 0.05);
+        g.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.3);
+
+        osc.connect(g);
+        g.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.3);
+    }
+
+    playLevelUp() {
+        const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+        notes.forEach((freq, i) => {
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.1);
+            g.gain.setValueAtTime(0, this.ctx.currentTime + i * 0.1);
+            g.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + i * 0.1 + 0.05);
+            g.gain.linearRampToValueAtTime(0, this.ctx.currentTime + i * 0.1 + 0.4);
+            osc.connect(g);
+            g.connect(this.ctx.destination);
+            osc.start(this.ctx.currentTime + i * 0.1);
+            osc.stop(this.ctx.currentTime + i * 0.1 + 0.5);
+        });
+    }
+
     stop() {
         if (this.gain) {
-            this.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.5);
+            this.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.2);
+            const oldNode = this.node;
             setTimeout(() => {
-                if (this.node) {
-                    this.node.stop();
-                    this.node = null;
+                if (oldNode) {
+                    try { oldNode.stop(); } catch (e) { }
                 }
-            }, 500);
+            }, 200);
+            this.gain = null;
+            this.node = null;
         }
     }
 }

@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useHabits } from '../context/HabitContext';
 import { Trophy, Award, Zap, Star } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { SoundService } from '../services/SoundService';
+import { HapticService } from '../services/HapticService';
 import { BADGES } from '../lib/constants';
 
 const LevelUpOverlay = () => {
@@ -10,6 +12,10 @@ const LevelUpOverlay = () => {
 
     useEffect(() => {
         if (lastUnlocked) {
+            // Trigger Sensory Feedback
+            SoundService.play('levelUp');
+            HapticService.success();
+
             // Big blast for level up or badges
             confetti({
                 particleCount: 200,
