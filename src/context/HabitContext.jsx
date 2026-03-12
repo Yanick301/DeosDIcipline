@@ -10,6 +10,8 @@ export const HabitProvider = ({ children }) => {
     const [settings, setSettings] = useState({});
     const [lang, setLang] = useState('en');
     const [onboardDone, setOnboardDone] = useState(false);
+    const [xp, setXp] = useState(0);
+    const [level, setLevel] = useState(1);
 
     useEffect(() => {
         setHabits(DB.getHabits());
@@ -18,12 +20,28 @@ export const HabitProvider = ({ children }) => {
         setSettings(s);
         setLang(s.lang || 'en');
         setOnboardDone(DB.getOnboardDone());
+        setXp(DB.get('deos_xp', 0));
+        setLevel(DB.get('deos_level', 1));
     }, []);
 
     const t = (key, ...replacements) => {
         let str = TRANSLATIONS[lang]?.[key] ?? TRANSLATIONS['en']?.[key] ?? key;
         replacements.forEach(r => { str = str.replace('%s', r); });
         return str;
+    };
+
+    const awardXp = (amount) => {
+        const newXp = xp + amount;
+        setXp(newXp);
+        DB.set('deos_xp', newXp);
+
+        // Simple level logic: 1000 XP per level
+        const newLevel = Math.floor(newXp / 1000) + 1;
+        if (newLevel > level) {
+            setLevel(newLevel);
+            DB.set('deos_level', newLevel);
+            // Could trigger a level up animation/modal here
+        }
     };
 
     const updateHabits = (newHabits) => {
@@ -39,11 +57,19 @@ export const HabitProvider = ({ children }) => {
     const toggleCompletion = (habitId, dateStr, status) => {
         const newComps = { ...completions };
         if (!newComps[habitId]) newComps[habitId] = {};
+
+        const isCompleting = newComps[habitId][dateStr] !== 'done' && status === 'done';
+
         if (newComps[habitId][dateStr] === status) {
             delete newComps[habitId][dateStr];
         } else {
             newComps[habitId][dateStr] = status;
         }
+
+        if (isCompleting) {
+            awardXp(50); // 50 XP per completion
+        }
+
         setCompletions(newComps);
         DB.saveCompletions(newComps);
     };
@@ -65,7 +91,8 @@ export const HabitProvider = ({ children }) => {
             habits, updateHabits, addHabit,
             completions, toggleCompletion,
             settings, lang, changeLang, t,
-            onboardDone, finishOnboarding
+            onboardDone, finishOnboarding,
+            xp, level
         }}>
             {children}
         </HabitContext.Provider>

@@ -4,7 +4,11 @@ import { useHabits } from '../context/HabitContext';
 import { Target, TrendingUp, Calendar, Zap } from 'lucide-react';
 
 const Stats = () => {
-    const { t } = useHabits();
+    const { t, level, xp } = useHabits();
+
+    const nextLevelXp = level * 1000;
+    const currentLevelBaseXp = (level - 1) * 1000;
+    const progress = ((xp - currentLevelBaseXp) / (nextLevelXp - currentLevelBaseXp)) * 100;
 
     return (
         <div className="space-y-8 pb-32">
@@ -27,13 +31,13 @@ const Stats = () => {
                             strokeWidth="10"
                             strokeDasharray={364}
                             initial={{ strokeDashoffset: 364 }}
-                            animate={{ strokeDashoffset: 364 - (85 / 100) * 364 }}
+                            animate={{ strokeDashoffset: 364 - (progress / 100) * 364 }}
                             transition={{ duration: 1.5, ease: "easeOut" }}
                             strokeLinecap="round"
                         />
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-3xl font-black text-white leading-none">85</span>
+                        <span className="text-3xl font-black text-white leading-none">{level}</span>
                         <span className="text-[10px] font-black text-airbnb uppercase tracking-widest mt-1">
                             {t('score')}
                         </span>

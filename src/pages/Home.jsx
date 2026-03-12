@@ -6,7 +6,7 @@ import ProgressRing from '../components/ProgressRing';
 import QuoteCard from '../components/QuoteCard';
 
 const Home = () => {
-    const { habits, completions, toggleCompletion, t, lang } = useHabits();
+    const { habits, completions, toggleCompletion, t, lang, level, xp } = useHabits();
 
     const today = new Date().getDay();
     const dateStr = new Date().toISOString().split('T')[0];
@@ -63,7 +63,7 @@ const Home = () => {
                 {[
                     { label: t('streak'), value: '12', color: 'orange' },
                     { label: t('done'), value: doneHabits.length, color: 'airbnb' },
-                    { label: t('score'), value: '85', color: 'green' }
+                    { label: t('score'), value: level, color: 'green' }
                 ].map((stat, i) => (
                     <motion.div
                         key={i}

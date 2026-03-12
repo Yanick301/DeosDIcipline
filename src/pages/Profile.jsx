@@ -4,7 +4,11 @@ import { useHabits } from '../context/HabitContext';
 import { Settings, Bell, Download, Trash2, Globe, Heart } from 'lucide-react';
 
 const Profile = () => {
-    const { t, lang, changeLang } = useHabits();
+    const { t, lang, changeLang, xp, level } = useHabits();
+
+    const nextLevelXp = level * 1000;
+    const currentLevelBaseXp = (level - 1) * 1000;
+    const progress = ((xp - currentLevelBaseXp) / (nextLevelXp - currentLevelBaseXp)) * 100;
 
     const handleReset = () => {
         if (confirm(t('reset_confirm'))) {
@@ -16,11 +20,28 @@ const Profile = () => {
     return (
         <div className="space-y-8 pb-32">
             <header className="flex flex-col items-center py-8">
-                <div className="w-24 h-24 bg-gradient-to-tr from-airbnb to-orange-400 rounded-full flex items-center justify-center text-4xl font-black text-white shadow-2xl shadow-airbnb/30 mb-4">
-                    D
+                <div className="relative">
+                    <div className="w-24 h-24 bg-gradient-to-tr from-airbnb to-orange-400 rounded-full flex items-center justify-center text-4xl font-black text-white shadow-2xl shadow-airbnb/30 mb-4">
+                        D
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 w-10 h-10 bg-surface-200 border-4 border-surface-100 rounded-full flex items-center justify-center text-xs font-black text-airbnb">
+                        {level}
+                    </div>
                 </div>
                 <h1 className="text-2xl font-black text-white tracking-tight">DeOs Warrior</h1>
-                <p className="text-text-tertiary text-xs font-bold uppercase tracking-[0.3em] mt-1">Level 12 Discipline</p>
+                <div className="w-full max-w-[200px] mt-4 space-y-2">
+                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-text-tertiary">
+                        <span>{xp} XP</span>
+                        <span>{nextLevelXp} XP</span>
+                    </div>
+                    <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                        <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${progress}%` }}
+                            className="h-full bg-airbnb shadow-[0_0_10px_rgba(255,56,92,0.5)]"
+                        />
+                    </div>
+                </div>
             </header>
 
             {/* Settings Sections */}
