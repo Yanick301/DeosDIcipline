@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useHabits } from '../context/HabitContext';
-import { Settings, LogOut, Shield, Bell, HelpCircle, Heart, Globe, Trash2, Github } from 'lucide-react';
+import { Shield, Bell, HelpCircle, Heart, Globe, Trash2, Download } from 'lucide-react';
 import { NotificationService } from '../services/NotificationService';
 
 const Profile = () => {
@@ -130,6 +130,7 @@ const Profile = () => {
                         <Download size={20} className="text-purple-400" />
                         <span className="flex-1 font-bold text-sm text-white text-left">{t('export')}</span>
                     </button>
+
                     <button
                         onClick={handleReset}
                         className="w-full flex items-center gap-4 p-5 hover:bg-red-500/10 transition-colors group"
