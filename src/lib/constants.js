@@ -13,6 +13,9 @@ export const BADGES = [
     { id: 'first_step', nameKey: 'badge_first_step_name', emoji: '🐣', descKey: 'badge_first_step_desc', rarity: 'common' },
     { id: 'consistent', nameKey: 'badge_consistent_name', emoji: '🏃', descKey: 'badge_consistent_desc', rarity: 'uncommon' },
     { id: 'discipline_master', nameKey: 'badge_master_name', emoji: '🥋', descKey: 'badge_master_desc', rarity: 'legendary' },
+    { id: 'legend_999', nameKey: 'badge_legend_999_name', emoji: '🔱', descKey: 'badge_legend_999_desc', rarity: 'legendary' },
     { id: 'xp_1000', nameKey: 'badge_xp_1000_name', emoji: '✨', descKey: 'badge_xp_1000_desc', rarity: 'rare' },
-    { id: 'xp_5000', nameKey: 'badge_xp_5000_name', emoji: '👑', descKey: 'badge_xp_5000_desc', rarity: 'epic' }
+    { id: 'xp_5000', nameKey: 'badge_xp_5000_name', emoji: '👑', descKey: 'badge_xp_5000_desc', rarity: 'epic' },
+    { id: 'xp_10000', nameKey: 'badge_xp_10000_name', emoji: '💎', descKey: 'badge_xp_10000_desc', rarity: 'epic' },
+    { id: 'xp_50000', nameKey: 'badge_xp_50000_name', emoji: '🌌', descKey: 'badge_xp_50000_desc', rarity: 'legendary' }
 ];

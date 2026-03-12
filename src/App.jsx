@@ -11,6 +11,7 @@ import Community from './pages/Community';
 import Programs from './pages/Programs';
 import Journal from './pages/Journal';
 import FocusTimer from './components/FocusTimer';
+import LevelUpOverlay from './components/LevelUpOverlay';
 import './index.css';
 
 const AppContent = () => {
@@ -56,6 +57,7 @@ const AppContent = () => {
 function App() {
   return (
     <HabitProvider>
+      <LevelUpOverlay />
       <AppContent />
     </HabitProvider>
   );

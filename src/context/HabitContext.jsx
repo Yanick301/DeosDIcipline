@@ -15,6 +15,7 @@ export const HabitProvider = ({ children }) => {
     const [level, setLevel] = useState(1);
     const [userId, setUserId] = useState('');
     const [unlockedBadges, setUnlockedBadges] = useState([]);
+    const [lastUnlocked, setLastUnlocked] = useState(null);
 
     useEffect(() => {
         // Forced reset check (Version 5)
@@ -59,11 +60,11 @@ export const HabitProvider = ({ children }) => {
         setXp(newXp);
         DB.set('deos_xp', newXp);
 
-        // Simple level logic: 1000 XP per level
         const newLevel = Math.floor(newXp / 1000) + 1;
         if (newLevel > level) {
             setLevel(newLevel);
             DB.set('deos_level', newLevel);
+            setLastUnlocked({ type: 'level', value: newLevel });
         }
 
         checkBadges(newXp, completions);
@@ -73,25 +74,37 @@ export const HabitProvider = ({ children }) => {
         const newlyUnlocked = [];
         const currentBadgeIds = new Set(unlockedBadges);
 
-        // 1. XP Milestones
-        if (currentXp >= 1000 && !currentBadgeIds.has('xp_1000')) newlyUnlocked.push('xp_1000');
-        if (currentXp >= 5000 && !currentBadgeIds.has('xp_5000')) newlyUnlocked.push('xp_5000');
+        const milestones = [
+            { id: 'xp_1000', threshold: 1000, type: 'xp' },
+            { id: 'xp_5000', threshold: 5000, type: 'xp' },
+            { id: 'xp_10000', threshold: 10000, type: 'xp' },
+            { id: 'xp_50000', threshold: 50000, type: 'xp' },
+            { id: 'first_step', threshold: 1, type: 'comp' },
+            { id: 'consistent', threshold: 10, type: 'comp' },
+            { id: 'discipline_master', threshold: 100, type: 'comp' },
+            { id: 'legend_999', threshold: 999, type: 'comp' },
+        ];
 
-        // 2. Completion Milestones
         const totalDone = Object.values(currentComps || {}).reduce((acc, h) => {
             if (!h || typeof h !== 'object') return acc;
             return acc + Object.values(h).filter(v => v === 'done').length;
         }, 0);
-        if (totalDone >= 1 && !currentBadgeIds.has('first_step')) newlyUnlocked.push('first_step');
-        if (totalDone >= 10 && !currentBadgeIds.has('consistent')) newlyUnlocked.push('consistent');
-        if (totalDone >= 100 && !currentBadgeIds.has('discipline_master')) newlyUnlocked.push('discipline_master');
+
+        milestones.forEach(m => {
+            const val = m.type === 'xp' ? currentXp : totalDone;
+            if (val >= m.threshold && !currentBadgeIds.has(m.id)) {
+                newlyUnlocked.push(m.id);
+            }
+        });
 
         if (newlyUnlocked.length > 0) {
             const updated = [...unlockedBadges, ...newlyUnlocked];
             setUnlockedBadges(updated);
             DB.saveUnlockedBadges(updated);
 
-            // Award bonus XP for badges: 500 XP per badge
+            // Trigger overlay for the last unlocked badge in this batch
+            setLastUnlocked({ type: 'badge', value: newlyUnlocked[newlyUnlocked.length - 1] });
+
             const bonusXp = newlyUnlocked.length * 500;
             const finalXp = currentXp + bonusXp;
             setXp(finalXp);
@@ -231,7 +244,7 @@ export const HabitProvider = ({ children }) => {
             completions, toggleCompletion, calculateMasterStreak, calculateHabitStreak,
             settings, lang, changeLang, t,
             onboardDone, finishOnboarding,
-            xp, level, userId, unlockedBadges
+            xp, level, userId, unlockedBadges, lastUnlocked, setLastUnlocked
         }}>
             {children}
         </HabitContext.Provider>
