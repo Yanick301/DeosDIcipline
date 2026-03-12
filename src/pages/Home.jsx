@@ -119,6 +119,7 @@ const Home = ({ onEdit }) => {
                                 key={h.id}
                                 habit={h}
                                 status={null}
+                                dateStr={dateStr}
                                 streak={calculateHabitStreak(h.id)}
                                 onComplete={toggleCompletion}
                                 onNav={(id) => onEdit(id)}
@@ -135,6 +136,7 @@ const Home = ({ onEdit }) => {
                                 key={h.id}
                                 habit={h}
                                 status={completions[h.id]?.[dateStr]}
+                                dateStr={dateStr}
                                 streak={calculateHabitStreak(h.id)}
                                 onComplete={toggleCompletion}
                                 onNav={(id) => onEdit(id)}
@@ -151,6 +153,7 @@ const Home = ({ onEdit }) => {
                                 key={h.id}
                                 habit={h}
                                 status="done"
+                                dateStr={dateStr}
                                 streak={calculateHabitStreak(h.id)}
                                 onComplete={toggleCompletion}
                                 onNav={(id) => onEdit(id)}

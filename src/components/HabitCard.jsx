@@ -4,7 +4,7 @@ import { Check, SkipForward, Flame, Clock } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { HABIT_ICONS } from '../lib/constants';
 
-const HabitCard = ({ habit, status, streak, onComplete, onNav }) => {
+const HabitCard = ({ habit, status, dateStr, streak, onComplete, onNav }) => {
     const icon = HABIT_ICONS.find(i => i.id === habit.icon) || HABIT_ICONS[0];
     const isDone = status === 'done';
     const isSkipped = status === 'skipped';
@@ -60,7 +60,7 @@ const HabitCard = ({ habit, status, streak, onComplete, onNav }) => {
                 {isDone ? (
                     <motion.button
                         whileTap={{ scale: 0.8 }}
-                        onClick={() => onComplete(habit.id, 'undo')}
+                        onClick={() => onComplete(habit.id, dateStr, 'undo')}
                         className="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center"
                     >
                         <Check size={20} strokeWidth={3} />
@@ -77,7 +77,7 @@ const HabitCard = ({ habit, status, streak, onComplete, onNav }) => {
                                     origin: { y: 0.6 },
                                     colors: ['#FF385C', '#ffffff', '#000000']
                                 });
-                                onComplete(habit.id, 'done');
+                                onComplete(habit.id, dateStr, 'done');
                             }}
                             className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-text-secondary flex items-center justify-center border border-white/5"
                         >
@@ -85,7 +85,7 @@ const HabitCard = ({ habit, status, streak, onComplete, onNav }) => {
                         </motion.button>
                         <motion.button
                             whileTap={{ scale: 0.8 }}
-                            onClick={() => onComplete(habit.id, 'skipped')}
+                            onClick={() => onComplete(habit.id, dateStr, 'skipped')}
                             className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-text-tertiary flex items-center justify-center border border-white/5"
                         >
                             <SkipForward size={20} strokeWidth={2.5} />
