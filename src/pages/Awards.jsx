@@ -5,7 +5,7 @@ import { Award, Trophy, Star, Shield, Zap } from 'lucide-react';
 import { BADGES } from '../lib/constants';
 
 const Awards = () => {
-    const { t } = useHabits();
+    const { t, unlockedBadges } = useHabits();
 
     return (
         <div className="space-y-8 pb-32">
@@ -29,25 +29,30 @@ const Awards = () => {
                     {t('badges')}
                 </h2>
                 <div className="grid grid-cols-2 gap-4">
-                    {BADGES.map((badge, i) => (
-                        <motion.div
-                            key={badge.id}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: i * 0.05 }}
-                            className="glass-card group hover:bg-airbnb/5 transition-all p-6 flex flex-col items-center text-center space-y-4"
-                        >
-                            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center text-3xl group-hover:scale-110 transition-transform grayscale opacity-30">
-                                {badge.emoji}
-                            </div>
-                            <div>
-                                <h3 className="text-sm font-black text-text-secondary mb-1">{t(badge.nameKey)}</h3>
-                                <p className="text-[10px] font-bold text-text-tertiary uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">
-                                    {t(badge.descKey)}
-                                </p>
-                            </div>
-                        </motion.div>
-                    ))}
+                    {BADGES.map((badge, i) => {
+                        const isUnlocked = unlockedBadges.includes(badge.id);
+                        return (
+                            <motion.div
+                                key={badge.id}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: i * 0.05 }}
+                                className={`glass-card group transition-all p-6 flex flex-col items-center text-center space-y-4 ${isUnlocked ? 'border-airbnb/40 bg-airbnb/[0.03]' : 'opacity-40 grayscale'}`}
+                            >
+                                <div className={`w-16 h-16 rounded-full flex items-center justify-center text-3xl group-hover:scale-110 transition-transform ${isUnlocked ? 'bg-airbnb/20' : 'bg-white/5'}`}>
+                                    {badge.emoji}
+                                </div>
+                                <div>
+                                    <h3 className={`text-sm font-black mb-1 ${isUnlocked ? 'text-white' : 'text-text-tertiary'}`}>
+                                        {t(badge.nameKey)}
+                                    </h3>
+                                    <p className="text-[10px] font-bold text-text-tertiary uppercase tracking-tighter transition-opacity">
+                                        {t(badge.descKey)}
+                                    </p>
+                                </div>
+                            </motion.div>
+                        );
+                    })}
                 </div>
             </section>
 

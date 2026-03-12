@@ -4,11 +4,41 @@ import { useHabits } from '../context/HabitContext';
 import { Target, TrendingUp, Calendar, Zap } from 'lucide-react';
 
 const Stats = () => {
-    const { t, level, xp, userId } = useHabits();
+    const { t, level, xp, userId, completions, habits } = useHabits();
 
     const nextLevelXp = level * 1000;
     const currentLevelBaseXp = (level - 1) * 1000;
     const progress = ((xp - currentLevelBaseXp) / (nextLevelXp - currentLevelBaseXp)) * 100;
+
+    // Calculate real stats
+    const totalCompletions = Object.values(completions).reduce((acc, habitComps) => {
+        return acc + Object.values(habitComps).filter(v => v === 'done').length;
+    }, 0);
+
+    // Calculate best streak (simplified for now)
+    const calculateBestStreak = () => {
+        let max = 0;
+        Object.values(completions).forEach(habitComps => {
+            const dates = Object.keys(habitComps).filter(d => habitComps[d] === 'done').sort();
+            if (dates.length > 0) {
+                let current = 1;
+                for (let i = 1; i < dates.length; i++) {
+                    const prev = new Date(dates[i - 1]);
+                    const next = new Date(dates[i]);
+                    const diff = (next - prev) / (1000 * 60 * 60 * 24);
+                    if (diff === 1) current++;
+                    else {
+                        max = Math.max(max, current);
+                        current = 1;
+                    }
+                }
+                max = Math.max(max, current);
+            }
+        });
+        return max;
+    };
+
+    const bestStreak = calculateBestStreak();
 
     return (
         <div className="space-y-8 pb-32">
@@ -53,11 +83,11 @@ const Stats = () => {
             {/* Mini Cards */}
             <div className="grid grid-cols-2 gap-4">
                 {[
-                    { icon: TrendingUp, label: t('best_streak'), value: '14', color: 'orange' },
-                    { icon: Target, label: t('completions'), value: '342', color: 'green' },
+                    { icon: TrendingUp, label: t('best_streak'), value: bestStreak, color: 'orange' },
+                    { icon: Target, label: t('completions'), value: totalCompletions, color: 'green' },
                 ].map((stat, i) => (
                     <div key={i} className="glass-card p-4 flex gap-4 items-center">
-                        <div className={`p-2 rounded-xl bg-${stat.color}-400/10 text-${stat.color}-400`}>
+                        <div className={`p-2 rounded-xl bg-${stat.color === 'orange' ? 'orange' : 'green'}-400/10 text-${stat.color === 'orange' ? 'orange' : 'green'}-400`}>
                             <stat.icon size={20} />
                         </div>
                         <div>

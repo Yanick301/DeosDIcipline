@@ -13,6 +13,7 @@ export const HabitProvider = ({ children }) => {
     const [xp, setXp] = useState(0);
     const [level, setLevel] = useState(1);
     const [userId, setUserId] = useState('');
+    const [unlockedBadges, setUnlockedBadges] = useState([]);
 
     useEffect(() => {
         // One-time reset check for version 4_reset
@@ -33,6 +34,7 @@ export const HabitProvider = ({ children }) => {
         setOnboardDone(DB.getOnboardDone());
         setXp(DB.get('deos_xp', 0));
         setLevel(DB.get('deos_level', 1));
+        setUnlockedBadges(DB.getUnlockedBadges());
     }, []);
 
     const t = (key, ...replacements) => {
@@ -42,7 +44,7 @@ export const HabitProvider = ({ children }) => {
     };
 
     const awardXp = (amount) => {
-        const newXp = xp + amount;
+        const newXp = (xp || 0) + amount;
         setXp(newXp);
         DB.set('deos_xp', newXp);
 
@@ -51,7 +53,31 @@ export const HabitProvider = ({ children }) => {
         if (newLevel > level) {
             setLevel(newLevel);
             DB.set('deos_level', newLevel);
-            // Could trigger a level up animation/modal here
+        }
+
+        checkBadges(newXp, completions);
+    };
+
+    const checkBadges = (currentXp, currentComps) => {
+        const newlyUnlocked = [];
+        const currentBadgeIds = new Set(unlockedBadges);
+
+        // 1. XP Milestones
+        if (currentXp >= 1000 && !currentBadgeIds.has('xp_1000')) newlyUnlocked.push('xp_1000');
+        if (currentXp >= 5000 && !currentBadgeIds.has('xp_5000')) newlyUnlocked.push('xp_5000');
+
+        // 2. Completion Milestones
+        const totalDone = Object.values(currentComps).reduce((acc, h) => acc + Object.values(h).filter(v => v === 'done').length, 0);
+        if (totalDone >= 1 && !currentBadgeIds.has('first_step')) newlyUnlocked.push('first_step');
+        if (totalDone >= 10 && !currentBadgeIds.has('consistent')) newlyUnlocked.push('consistent');
+        if (totalDone >= 100 && !currentBadgeIds.has('discipline_master')) newlyUnlocked.push('discipline_master');
+
+        if (newlyUnlocked.length > 0) {
+            const updated = [...unlockedBadges, ...newlyUnlocked];
+            setUnlockedBadges(updated);
+            DB.saveUnlockedBadges(updated);
+            // Award bonus XP for badges, but avoid recursive call loop if needed
+            // For now just set state directly or skip loop
         }
     };
 
@@ -103,7 +129,7 @@ export const HabitProvider = ({ children }) => {
             completions, toggleCompletion,
             settings, lang, changeLang, t,
             onboardDone, finishOnboarding,
-            xp, level, userId
+            xp, level, userId, unlockedBadges
         }}>
             {children}
         </HabitContext.Provider>
