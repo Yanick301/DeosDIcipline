@@ -37,67 +37,80 @@ const Home = ({ onEdit }) => {
 
     return (
         <div className="space-y-8 pb-32">
-            {/* Bento Box Dashboard Header */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Main Welcome & Progress (Spans 2 cols on desktop) */}
-                <header className="glass-card md:col-span-2 flex items-center justify-between p-6">
-                    <div className="space-y-2">
-                        <span className="text-white/40 text-[10px] uppercase tracking-[0.3em] font-medium block">
-                            {formattedDate}
-                        </span>
-                        <h1 className="text-4xl font-light tracking-tight text-white leading-none">
-                            {greeting(new Date().getHours())},<br />
-                            <span className="font-medium">{userId}</span>
-                        </h1>
-                    </div>
-
-                    {/* Refined Progress Ring */}
-                    <div className="relative w-20 h-20 flex items-center justify-center flex-shrink-0">
-                        <svg className="w-full h-full transform -rotate-90 relative z-10">
-                            <circle cx="40" cy="40" r="36" className="stroke-white/5 fill-none" strokeWidth="2" />
-                            <motion.circle
-                                cx="40" cy="40" r="36"
-                                className="stroke-white fill-none"
-                                strokeWidth="2"
-                                strokeDasharray={226.2}
-                                initial={{ strokeDashoffset: 226.2 }}
-                                animate={{ strokeDashoffset: 226.2 - (progress / 100) * 226.2 }}
-                                transition={{ duration: 1.5, ease: "easeInOut" }}
-                                strokeLinecap="round"
-                            />
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
-                            <span className="text-xl font-medium text-white leading-none">{progress}%</span>
-                        </div>
-                    </div>
-                </header>
-
-                {/* Level & Streak Bento Block */}
-                <div className="glass-card flex flex-col justify-between p-6 h-full min-h-[140px]">
-                    <div className="flex justify-between items-start">
-                        <span className="text-[10px] text-white/40 uppercase tracking-[0.2em] font-medium">Ascension</span>
-                        <span className="text-xl opacity-50">🔱</span>
-                    </div>
-                    <div>
-                        <div className="flex items-end gap-2">
-                            <span className="text-4xl font-light text-white">{level}</span>
-                            <span className="text-sm font-medium text-white/40 mb-1 border-l border-white/10 pl-2 ml-1">Lvl</span>
-                        </div>
-                        <div className="mt-2 text-xs font-medium text-gold/70 flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-gold/70 shadow-[0_0_10px_rgba(212,175,55,0.5)]"></span>
-                            {calculateMasterStreak()} Days Discipline
-                        </div>
+            {/* Header */}
+            <header className="flex justify-between items-end">
+                <div className="space-y-1">
+                    <span className="text-gold text-[10px] font-black uppercase tracking-[0.4em] mb-1 block opacity-60">
+                        {userId} • {formattedDate}
+                    </span>
+                    <h1 className="text-5xl font-black tracking-tighter text-white leading-none">
+                        {greeting(new Date().getHours())}
+                    </h1>
+                </div>
+                <div className="relative w-24 h-24 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gold/5 blur-2xl rounded-full" />
+                    <svg className="w-full h-full transform -rotate-90 relative z-10">
+                        <circle cx="48" cy="48" r="42" className="stroke-white/5 fill-none" strokeWidth="3" />
+                        <motion.circle
+                            cx="48" cy="48" r="42"
+                            className="stroke-gold fill-none"
+                            strokeWidth="3"
+                            strokeDasharray={263.9}
+                            initial={{ strokeDashoffset: 263.9 }}
+                            animate={{ strokeDashoffset: 263.9 - (progress / 100) * 263.9 }}
+                            transition={{ duration: 2, ease: "circOut" }}
+                            strokeLinecap="round"
+                        />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
+                        <span className="text-2xl font-black text-white leading-none">{progress}%</span>
+                        <span className="text-[7px] font-black text-gold/40 uppercase tracking-widest mt-1">Done</span>
                     </div>
                 </div>
+            </header>
+
+            {/* Quote */}
+            <QuoteCard />
+
+            {/* Stats Quick Look */}
+            <div className="grid grid-cols-3 gap-3">
+                {[
+                    { label: t('streak'), value: calculateMasterStreak(), color: 'gold', icon: '🔥' },
+                    { label: t('done'), value: doneHabits.length, color: 'gold', icon: '✅' },
+                    { label: t('score'), value: level, color: 'gold', icon: '🔱' }
+                ].map((stat, i) => (
+                    <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{
+                            type: 'spring',
+                            stiffness: 400,
+                            damping: 25,
+                            delay: 0.05 * i
+                        }}
+                        className="glass-premium p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group"
+                    >
+                        <div className="absolute -right-1 -top-1 text-2xl opacity-10 grayscale group-hover:grayscale-0 transition-all duration-500">
+                            {stat.icon}
+                        </div>
+                        <span className="text-[9px] font-black text-white/30 mb-2 uppercase tracking-[0.2em] leading-none z-10">
+                            {stat.label}
+                        </span>
+                        <span className={`text-2xl font-black z-10 text-gold-light`}>
+                            {stat.value}
+                        </span>
+                    </motion.div>
+                ))}
             </div>
 
             {/* Habits List */}
             <section className="space-y-4">
                 <div className="flex justify-between items-center px-1">
-                    <h2 className="text-[14px] font-medium text-white/70">
+                    <h2 className="text-xs font-black uppercase tracking-[0.2em] text-text-tertiary">
                         {t('today')}
                     </h2>
-                    <span className="text-[10px] font-medium px-2.5 py-1 bg-white/5 text-white/50 rounded-full border border-white/5">
+                    <span className="text-[10px] font-bold px-2 py-0.5 bg-airbnb/20 text-airbnb rounded-full">
                         {pendingHabits.length} {t('left')}
                     </span>
                 </div>
@@ -130,7 +143,7 @@ const Home = ({ onEdit }) => {
                         {/* Skipped / Later */}
                         {otherHabits.length > 0 && (
                             <div className="space-y-3">
-                                <p className="text-[13px] font-medium text-white/50 px-1">
+                                <p className="text-[11px] font-black uppercase tracking-widest text-text-tertiary px-1">
                                     {t('skipped_later')}
                                 </p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -152,7 +165,7 @@ const Home = ({ onEdit }) => {
                         {/* Completed Items */}
                         {doneHabits.length > 0 && (
                             <div className="space-y-3">
-                                <p className="text-[13px] font-medium text-gold/70 px-1">
+                                <p className="text-[11px] font-black uppercase tracking-widest text-gold px-1">
                                     {t('completed')}
                                 </p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

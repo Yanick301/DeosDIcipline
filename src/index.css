@@ -5,18 +5,13 @@
   --color-gold-light: #F7D794;
   --color-gold: #D4AF37;
   --color-gold-dark: #B8860B;
-  --color-obsidian: #000000;
-  /* True OLED Black */
-  --color-surface-100: #000000;
-  /* True OLED Black */
-  --color-surface-200: #0A0A0A;
-  /* Extremely dark gray for contrast */
-  --color-surface-300: #121212;
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #EBEBF5;
-  /* iOS secondary white */
-  --color-text-tertiary: #EBEBF599;
-  /* iOS tertiary subtle white */
+  --color-obsidian: #0A0A0B;
+  --color-surface-100: #0A0A0B;
+  --color-surface-200: #141416;
+  --color-surface-300: #1E1E22;
+  --color-text-primary: #F8F8F2;
+  --color-text-secondary: #A0A0B0;
+  --color-text-tertiary: #606070;
 
   --font-sans: "Inter", "SF Pro Display", "system-ui", "sans-serif";
 
@@ -36,7 +31,7 @@
 }
 
 :root {
-  background-color: #000000;
+  background-color: #121212;
   color: #FFFFFF;
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -49,7 +44,6 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
-  background-color: #000000;
 }
 
 #root {
@@ -57,64 +51,67 @@ body {
 }
 
 @layer components {
-
-  /* Ultra-minimalist squircle glass card */
   .glass-card {
-    @apply bg-white/5 backdrop-blur-2xl border border-white/5 rounded-[32px] p-5 transition-all duration-500 overflow-hidden relative;
+    @apply bg-surface-200/60 backdrop-blur-xl border border-white/5 rounded-2xl p-4 transition-all duration-300;
   }
 
-  /* Deep Frosted Premium Glass */
   .glass-premium {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-    backdrop-filter: blur(60px) saturate(200%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    border-radius: 32px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow:
+      0 30px 60px -12px rgba(0, 0, 0, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
-  /* Reserved only for high-value highlights */
   .glass-gold {
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(212, 175, 55, 0.01) 100%);
-    backdrop-filter: blur(40px) saturate(150%);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.01) 100%);
+    backdrop-filter: blur(30px);
     border: 1px solid rgba(212, 175, 55, 0.15);
-    box-shadow: 0 10px 30px -10px rgba(212, 175, 55, 0.2);
-    border-radius: 32px;
+    box-shadow:
+      0 20px 40px -10px rgba(0, 0, 0, 0.5),
+      0 0 20px rgba(212, 175, 55, 0.05);
   }
 
-  /* Nullify the aggressive noise for V3 */
   .bg-noise {
-    display: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99;
   }
 
-  /* Subtle, elegant global glow */
   .ambient-glow {
     position: fixed;
-    width: 80vw;
-    height: 80vw;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
-    top: -40vw;
-    left: 10vw;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 70%);
+    top: -30vw;
+    right: -30vw;
     pointer-events: none;
     z-index: -1;
-    animation: flow 20s ease-in-out infinite alternate;
+    animation: pulse 10s ease-in-out infinite alternate;
   }
 
-  @keyframes flow {
+  @keyframes pulse {
     0% {
-      transform: translate(0, 0) scale(1);
+      transform: scale(1) translate(0, 0);
+      opacity: 0.5;
     }
 
     100% {
-      transform: translate(100px, 50px) scale(1.1);
+      transform: scale(1.1) translate(-50px, 50px);
+      opacity: 0.8;
     }
   }
 
   .text-gold-gradient {
-    @apply bg-gradient-to-tr from-gold-light via-white to-gold bg-clip-text text-transparent;
+    @apply bg-gradient-to-tr from-gold-dark via-gold-light to-gold-dark bg-clip-text text-transparent;
   }
 
   .gold-glow {
-    box-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
   }
 
   /* Rarity Glows (Refined) */

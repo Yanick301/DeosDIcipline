@@ -71,12 +71,8 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
 
                 {/* Desktop Logo Space */}
                 <div className="hidden lg:block absolute top-10 left-8">
-                    <h2 className="text-xl font-light text-white tracking-tight flex flex-col">
-                        <span className="text-white/40 text-[10px] uppercase tracking-widest font-medium mb-1">System</span>
-                        <div className="flex items-center gap-1.5 font-medium">
-                            <span className="w-2 h-2 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]"></span>
-                            DeOs
-                        </div>
+                    <h2 className="text-xl font-black text-white tracking-tighter flex items-center gap-2">
+                        <span className="text-airbnb">DeOs</span> Discipline
                     </h2>
                 </div>
 
@@ -89,17 +85,17 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => setActiveTab('add')}
                                     className="
-                                        w-14 h-14 bg-white/10 backdrop-blur-md rounded-[20px] flex items-center justify-center text-white border border-white/10
+                                        w-16 h-16 bg-airbnb rounded-full flex items-center justify-center text-white shadow-[0_10px_25px_rgba(255,56,92,0.4)]
                                         /* Mobile positioning */
-                                        absolute -top-10 left-1/2 -translate-x-1/2
+                                        absolute -top-12 left-1/2 -translate-x-1/2 border-4 border-surface-100
                                         /* Desktop positioning */
-                                        md:static md:w-14 md:h-14 md:mx-auto md:translate-x-0
+                                        md:static md:w-14 md:h-14 md:mx-auto md:translate-x-0 md:border-none
                                         /* Large Desktop */
-                                        lg:w-full lg:rounded-[20px] lg:gap-3 lg:hover:bg-white/15
+                                        lg:w-full lg:h-14 lg:rounded-2xl lg:gap-3
                                     "
                                 >
-                                    <Plus size={mdAndUp ? 22 : 24} strokeWidth={2} />
-                                    <span className="hidden lg:block font-medium tracking-tight">New Habit</span>
+                                    <Plus size={mdAndUp ? 24 : 32} strokeWidth={3} />
+                                    <span className="hidden lg:block font-black tracking-widest uppercase">New Habit</span>
                                 </motion.button>
                             </div>
                         );
@@ -118,7 +114,7 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
                                 md:w-full md:h-14 md:rounded-2xl
                                 /* Large Desktop */
                                 lg:flex-row lg:justify-start lg:px-4 lg:gap-4 lg:w-[calc(100%-2rem)]
-                                ${isActive ? 'text-white' : 'text-white/40 hover:text-white/80'}
+                                ${isActive ? 'text-airbnb' : 'text-text-tertiary hover:text-white/60'}
                             `}
                         >
                             {/* Icon Container */}
@@ -129,17 +125,17 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
                                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                                 className={`
                                     relative p-2 rounded-2xl transition-colors
-                                    ${isActive && mdAndUp ? 'lg:bg-transparent lg:text-white' : ''}
+                                    ${isActive && mdAndUp ? 'lg:bg-transparent lg:text-airbnb' : ''}
                                 `}
                             >
                                 <tab.icon
-                                    size={mdAndUp ? 22 : 20}
-                                    strokeWidth={isActive ? 2 : 1.5}
+                                    size={mdAndUp ? 24 : 20}
+                                    strokeWidth={isActive ? 2.5 : 2}
                                 />
                                 {isActive && !mdAndUp && (
                                     <motion.div
                                         layoutId="tab-pill"
-                                        className="absolute inset-0 bg-white/10 rounded-xl -z-10"
+                                        className="absolute inset-0 bg-airbnb/10 rounded-2xl -z-10"
                                         transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                                     />
                                 )}
@@ -147,12 +143,12 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
 
                             {/* Label */}
                             <span className={`
-                                font-medium tracking-wide capitalize transition-all duration-500
+                                font-black tracking-[0.15em] uppercase transition-all duration-500
                                 /* Mobile Label */
-                                absolute bottom-2 text-[8px]
+                                absolute bottom-2 text-[7px]
                                 ${isActive && !mdAndUp ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-75 md:hidden'}
                                 /* Large Desktop Label */
-                                lg:static lg:opacity-100 lg:translate-y-0 lg:scale-100 lg:text-[13px]
+                                lg:static lg:opacity-100 lg:translate-y-0 lg:scale-100 lg:text-[10px]
                             `}>
                                 {tab.label}
                             </span>

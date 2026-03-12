@@ -1,4 +1,4 @@
-import { SoundService } from './SoundService';
+
 
 export const NotificationService = {
     sentToday: new Set(),
@@ -30,7 +30,7 @@ export const NotificationService = {
     },
 
     triggerAlarm(habit, t) {
-        SoundService.play('alarm');
+
         this.sendNotification(
             `🔱 ${habit.name}`,
             t('notif_body', habit.name) || `Time for your discipline: ${habit.name}`
@@ -48,13 +48,12 @@ export const NotificationService = {
 
             notif.onclick = () => {
                 window.focus();
-                SoundService.stopAlarm();
                 notif.close();
             };
         }
     },
 
     stopAlarm() {
-        SoundService.stopAlarm();
+        // Obsolete
     }
 };

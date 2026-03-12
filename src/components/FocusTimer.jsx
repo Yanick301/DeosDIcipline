@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, RotateCcw, Volume2, VolumeX, Leaf, CloudRain, Wind } from 'lucide-react';
-import { SoundService } from '../services/SoundService';
+import { Play, Pause, RotateCcw } from 'lucide-react';
 
 const MODES = {
     FOCUS: { label: 'Focus', time: 25 * 60, color: 'var(--color-gold)' },
@@ -9,27 +8,13 @@ const MODES = {
     LONG: { label: 'Long Break', time: 15 * 60, color: '#0A84FF' }
 };
 
-const SOUNDS = [
-    { id: 'none', icon: VolumeX, label: 'Silence' },
-    { id: 'rain', icon: CloudRain, label: 'Rain' },
-    { id: 'forest', icon: Leaf, label: 'Forest' },
-    { id: 'wind', icon: Wind, label: 'Wind' }
-];
+
 
 const FocusTimer = () => {
     const [mode, setMode] = useState('FOCUS');
     const [timeLeft, setTimeLeft] = useState(MODES.FOCUS.time);
     const [isActive, setIsActive] = useState(false);
-    const [sound, setSound] = useState('none');
 
-    useEffect(() => {
-        if (isActive && sound !== 'none') {
-            SoundService.play(sound);
-        } else {
-            SoundService.stop();
-        }
-        return () => SoundService.stop();
-    }, [isActive, sound]);
 
     useEffect(() => {
         let interval = null;
@@ -45,7 +30,6 @@ const FocusTimer = () => {
     }, [isActive, timeLeft]);
 
     const toggleTimer = () => {
-        SoundService.init();
         setIsActive(!isActive);
     };
 
@@ -144,27 +128,7 @@ const FocusTimer = () => {
                     {isActive ? <Pause size={32} fill="currentColor" /> : <Play size={32} fill="currentColor" className="ml-1" />}
                 </button>
 
-                <div className="relative group">
-                    <button className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-text-tertiary">
-                        <Volume2 size={24} />
-                    </button>
 
-                    {/* Sound Selector Tooltip-style */}
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
-                        <div className="glass-premium p-2 rounded-2xl flex gap-2 border-gold/20">
-                            {SOUNDS.map((s) => (
-                                <button
-                                    key={s.id}
-                                    onClick={() => setSound(s.id)}
-                                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${sound === s.id ? 'bg-gold text-obsidian' : 'text-text-tertiary hover:bg-white/5'
-                                        }`}
-                                >
-                                    <s.icon size={18} />
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
             </div>
 
             {/* Quote / Motivation */}
