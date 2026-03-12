@@ -13,7 +13,7 @@ import Journal from './pages/Journal';
 import './index.css';
 
 const AppContent = () => {
-  const { onboardDone, currentScreen, setScreen } = useHabits();
+  const { onboardDone } = useHabits();
   const [activeTab, setActiveTab] = useState('home');
 
   if (!onboardDone) return <Onboarding />;

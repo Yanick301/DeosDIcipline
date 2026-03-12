@@ -4,7 +4,7 @@ import { useHabits } from '../context/HabitContext';
 import { Settings, Bell, Download, Trash2, Globe, Heart } from 'lucide-react';
 
 const Profile = () => {
-    const { t, lang, changeLang, xp, level } = useHabits();
+    const { t, lang, changeLang, xp, level, userId } = useHabits();
 
     const nextLevelXp = level * 1000;
     const currentLevelBaseXp = (level - 1) * 1000;

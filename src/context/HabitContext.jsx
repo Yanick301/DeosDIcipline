@@ -16,16 +16,17 @@ export const HabitProvider = ({ children }) => {
     const [unlockedBadges, setUnlockedBadges] = useState([]);
 
     useEffect(() => {
-        // One-time reset check for version 4_reset
-        const hasReset = localStorage.getItem('deos_v4_reset_done');
+        // Forced reset check (Version 5)
+        const hasReset = localStorage.getItem('deos_v5_force_reset');
         if (!hasReset) {
             DB.clearAll();
-            localStorage.setItem('deos_v4_reset_done', 'true');
+            localStorage.setItem('deos_v5_force_reset', 'true');
             window.location.reload();
             return;
         }
 
-        setUserId(DB.ensureUserId());
+        const id = DB.ensureUserId() || `Warrior-${Math.floor(Math.random() * 8999) + 1000}`;
+        setUserId(id);
         setHabits(DB.getHabits());
         setCompletions(DB.getCompletions());
         const s = DB.getSettings();

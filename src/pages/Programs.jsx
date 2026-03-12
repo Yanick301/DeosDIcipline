@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Zap, Timer, Flame, ChevronRight, Lock } from 'lucide-react';
 import { useHabits } from '../context/HabitContext';
