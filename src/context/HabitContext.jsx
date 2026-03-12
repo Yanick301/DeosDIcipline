@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { DB } from '../lib/db';
 import { TRANSLATIONS } from '../lib/i18n';
 import { NotificationService } from '../services/NotificationService';
@@ -39,6 +39,12 @@ export const HabitProvider = ({ children }) => {
         setUnlockedBadges(DB.getUnlockedBadges());
     }, []);
 
+    const t = useCallback((key, ...replacements) => {
+        let str = TRANSLATIONS[lang]?.[key] ?? TRANSLATIONS['en']?.[key] ?? key;
+        replacements.forEach(r => { str = str.replace('%s', r); });
+        return str;
+    }, [lang]);
+
     useEffect(() => {
         // Notification loop - check every 60 seconds
         const interval = setInterval(() => {
@@ -47,12 +53,6 @@ export const HabitProvider = ({ children }) => {
 
         return () => clearInterval(interval);
     }, [habits, completions, t]);
-
-    const t = (key, ...replacements) => {
-        let str = TRANSLATIONS[lang]?.[key] ?? TRANSLATIONS['en']?.[key] ?? key;
-        replacements.forEach(r => { str = str.replace('%s', r); });
-        return str;
-    };
 
     const awardXp = (amount) => {
         const newXp = (xp || 0) + amount;
