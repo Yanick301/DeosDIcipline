@@ -77,9 +77,80 @@ export const HabitProvider = ({ children }) => {
             const updated = [...unlockedBadges, ...newlyUnlocked];
             setUnlockedBadges(updated);
             DB.saveUnlockedBadges(updated);
-            // Award bonus XP for badges, but avoid recursive call loop if needed
-            // For now just set state directly or skip loop
+
+            // Award bonus XP for badges: 500 XP per badge
+            const bonusXp = newlyUnlocked.length * 500;
+            const finalXp = currentXp + bonusXp;
+            setXp(finalXp);
+            DB.set('deos_xp', finalXp);
         }
+    };
+
+    const calculateMasterStreak = () => {
+        const allDates = new Set();
+        Object.values(completions).forEach(hComps => {
+            Object.keys(hComps).forEach(date => {
+                if (hComps[date] === 'done') allDates.add(date);
+            });
+        });
+
+        const sortedDates = Array.from(allDates).sort().reverse();
+        if (sortedDates.length === 0) return 0;
+
+        let streak = 0;
+        let curr = new Date();
+        curr.setHours(0, 0, 0, 0);
+
+        // Check if today or yesterday was the last completion to maintain streak
+        const todayStr = curr.toISOString().split('T')[0];
+        const yesterday = new Date(curr);
+        yesterday.setDate(curr.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+        if (!allDates.has(todayStr) && !allDates.has(yesterdayStr)) return 0;
+
+        let checkDate = allDates.has(todayStr) ? curr : yesterday;
+
+        while (true) {
+            const ds = checkDate.toISOString().split('T')[0];
+            if (allDates.has(ds)) {
+                streak++;
+                checkDate.setDate(checkDate.getDate() - 1);
+            } else {
+                break;
+            }
+        }
+        return streak;
+    };
+
+    const calculateHabitStreak = (habitId) => {
+        const hComps = completions[habitId] || {};
+        const allDates = Object.keys(hComps).filter(d => hComps[d] === 'done').sort().reverse();
+        if (allDates.length === 0) return 0;
+
+        let streak = 0;
+        let curr = new Date();
+        curr.setHours(0, 0, 0, 0);
+
+        const todayStr = curr.toISOString().split('T')[0];
+        const yesterday = new Date(curr);
+        yesterday.setDate(curr.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+        if (!hComps[todayStr] && !hComps[yesterdayStr]) return 0;
+
+        let checkDate = hComps[todayStr] ? curr : yesterday;
+
+        while (true) {
+            const ds = checkDate.toISOString().split('T')[0];
+            if (hComps[ds] === 'done') {
+                streak++;
+                checkDate.setDate(checkDate.getDate() - 1);
+            } else {
+                break;
+            }
+        }
+        return streak;
     };
 
     const updateHabits = (newHabits) => {
@@ -143,7 +214,7 @@ export const HabitProvider = ({ children }) => {
     return (
         <HabitContext.Provider value={{
             habits, updateHabits, addHabit, updateHabit, deleteHabit,
-            completions, toggleCompletion,
+            completions, toggleCompletion, calculateMasterStreak, calculateHabitStreak,
             settings, lang, changeLang, t,
             onboardDone, finishOnboarding,
             xp, level, userId, unlockedBadges

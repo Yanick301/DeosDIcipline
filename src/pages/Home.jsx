@@ -64,7 +64,7 @@ const Home = ({ onEdit }) => {
             {/* Stats Quick Look */}
             <div className="grid grid-cols-3 gap-3">
                 {[
-                    { label: t('streak'), value: '12', color: 'orange' },
+                    { label: t('streak'), value: calculateMasterStreak(), color: 'orange' },
                     { label: t('done'), value: doneHabits.length, color: 'airbnb' },
                     { label: t('score'), value: level, color: 'green' }
                 ].map((stat, i) => (
@@ -111,7 +111,7 @@ const Home = ({ onEdit }) => {
                                 key={h.id}
                                 habit={h}
                                 status={null}
-                                streak={0}
+                                streak={calculateHabitStreak(h.id)}
                                 onComplete={toggleCompletion}
                                 onNav={(id) => onEdit(id)}
                             />
@@ -127,7 +127,7 @@ const Home = ({ onEdit }) => {
                                 key={h.id}
                                 habit={h}
                                 status={completions[h.id]?.[dateStr]}
-                                streak={0}
+                                streak={calculateHabitStreak(h.id)}
                                 onComplete={toggleCompletion}
                                 onNav={(id) => onEdit(id)}
                             />
@@ -143,7 +143,7 @@ const Home = ({ onEdit }) => {
                                 key={h.id}
                                 habit={h}
                                 status="done"
-                                streak={0}
+                                streak={calculateHabitStreak(h.id)}
                                 onComplete={toggleCompletion}
                                 onNav={(id) => onEdit(id)}
                             />

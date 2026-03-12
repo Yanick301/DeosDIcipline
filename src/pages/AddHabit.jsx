@@ -114,7 +114,7 @@ const AddHabit = ({ onDone, editingHabit }) => {
                         <Calendar size={20} className="text-airbnb" />
                         <span className="flex-1 font-bold text-sm text-white">{t('schedule')}</span>
                         <div className="flex gap-1">
-                            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+                            {t('days_short').map((d, i) => (
                                 <button
                                     key={i}
                                     onClick={() => {

@@ -39,8 +39,8 @@ const Journal = () => {
         <div className="space-y-8 pb-32">
             <header className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-black text-white">Daily Journal</h1>
-                    <p className="text-text-secondary text-sm font-medium">Reflect on your progress</p>
+                    <h1 className="text-3xl font-black text-white">{t('journal_title')}</h1>
+                    <p className="text-text-secondary text-sm font-medium">{t('journal_subtitle')}</p>
                 </div>
                 <motion.button
                     whileTap={{ scale: 0.9 }}
@@ -62,7 +62,7 @@ const Journal = () => {
                         <textarea
                             value={newEntry}
                             onChange={(e) => setNewEntry(e.target.value)}
-                            placeholder="What did you learn today? Any breakthrough in discipline?"
+                            placeholder={t('journal_placeholder')}
                             className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-airbnb min-h-[120px]"
                         />
                         <div className="flex gap-2">
@@ -70,7 +70,7 @@ const Journal = () => {
                                 onClick={addEntry}
                                 className="flex-1 bg-airbnb text-white font-black py-3 rounded-2xl shadow-lg shadow-airbnb/20"
                             >
-                                Save Entry
+                                {t('journal_save')}
                             </button>
                             <button
                                 onClick={() => setIsAdding(false)}
@@ -89,8 +89,8 @@ const Journal = () => {
                         <Book size={32} />
                     </div>
                     <div>
-                        <h3 className="text-white font-bold">No entries yet</h3>
-                        <p className="text-text-tertiary text-sm">Discipline starts with awareness.</p>
+                        <h3 className="text-white font-bold">{t('journal_no_entries')}</h3>
+                        <p className="text-text-tertiary text-sm">{t('journal_awareness')}</p>
                     </div>
                 </div>
             )}

@@ -72,7 +72,7 @@ const Community = () => {
                     <h1 className="text-3xl font-black text-white">{t('community')}</h1>
                     <div className="flex items-center gap-2 text-text-secondary text-sm font-medium">
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                        {activeUsers} {t('members')} online
+                        {t('members_online', activeUsers)}
                     </div>
                 </div>
                 <div className="w-12 h-12 bg-surface-200 rounded-2xl flex items-center justify-center text-text-secondary">

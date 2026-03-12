@@ -111,7 +111,7 @@ const Programs = () => {
                                 style={{ backgroundColor: enrolled === program.id ? undefined : program.color, color: 'white' }}
                             >
                                 {enrolled === program.id ? (
-                                    <>Check Home Screen <Flame size={18} /></>
+                                    <>{t('check_home')} <Flame size={18} /></>
                                 ) : (
                                     <>{t('join_program')} <ChevronRight size={18} /></>
                                 )}
@@ -124,7 +124,7 @@ const Programs = () => {
                 <div className="relative">
                     <div className="absolute inset-0 bg-surface-100/40 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-3xl border border-dashed border-white/10">
                         <Lock size={32} className="text-text-tertiary mb-2" />
-                        <p className="text-xs font-black text-text-tertiary uppercase tracking-widest">Level 10 Required</p>
+                        <p className="text-xs font-black text-text-tertiary uppercase tracking-widest">{t('level_required', '10')}</p>
                     </div>
                     <div className="glass-card opacity-30 grayscale blur-sm">
                         <div className="h-40" />

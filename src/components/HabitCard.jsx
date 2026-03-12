@@ -15,7 +15,7 @@ const HabitCard = ({ habit, status, streak, onComplete, onNav }) => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             whileHover={{ y: -2 }}
-            className={`relative overflow-hidden glass-card mb-4 flex items-center gap-4 cursor-pointer ${isDone ? 'opacity-60' : ''}`}
+            className={`relative overflow-hidden glass-card mb-4 flex items-center gap-4 cursor-pointer ${isDone ? 'opacity-60' : ''} ${isSkipped ? 'border-orange-500/30' : ''}`}
             onClick={(e) => {
                 if (e.target.closest('.habit-actions')) return;
                 onNav(habit.id);
@@ -24,7 +24,7 @@ const HabitCard = ({ habit, status, streak, onComplete, onNav }) => {
             {/* Status Bar */}
             <div
                 className="absolute left-0 top-0 bottom-0 w-1.5"
-                style={{ backgroundColor: color }}
+                style={{ backgroundColor: isSkipped ? '#FB923C' : color }}
             />
 
             {/* Icon */}
