@@ -16,6 +16,9 @@ const App = {
 
     // ─────────────────── BOOT ───────────────────
     init() {
+        // i18n
+        i18n.init();
+
         // Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').catch(e => console.warn('[SW]', e));
@@ -26,7 +29,7 @@ const App = {
             e.preventDefault(); this.installEvt = e; this.showInstallBanner();
         });
         window.addEventListener('appinstalled', () => {
-            this.hideInstallBanner(); this.toast('App installed! 📱', 'success');
+            this.hideInstallBanner(); this.toast(i18n.t('App installed! 📱'), 'success');
         });
 
         // Seed
@@ -36,13 +39,73 @@ const App = {
         // Splash exit
         setTimeout(() => {
             const s = document.getElementById('splash-overlay');
-            if (s) { s.classList.add('out'); setTimeout(() => s.remove(), 550); }
+            if (s) {
+                s.classList.add('out');
+                setTimeout(() => {
+                    s.remove();
+                    this.checkOnboarding();
+                }, 550);
+            }
         }, 2100);
 
         // Routing
         window.addEventListener('hashchange', () => this.route());
         NotificationManager.rescheduleAll();
         this.route();
+    },
+
+    checkOnboarding() {
+        const done = localStorage.getItem('deos_onboard_done');
+        if (!done) {
+            this.obStart();
+        } else {
+            document.getElementById('app').style.display = 'block';
+        }
+    },
+
+    obStart() {
+        const ob = document.getElementById('onboarding');
+        const app = document.getElementById('app');
+        if (ob) ob.style.display = 'flex';
+        if (app) app.style.display = 'none';
+        this.updateUIStrings();
+    },
+
+    setLang(lang) {
+        i18n.set(lang);
+        this.updateUIStrings();
+        // Update picker UI
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.id === `lang-${lang}`);
+        });
+        // Update settings checkmarks if visible
+        const enCheck = document.getElementById('lang-en-check');
+        const frCheck = document.getElementById('lang-fr-check');
+        if (enCheck) enCheck.textContent = lang === 'en' ? '✓' : '';
+        if (frCheck) frCheck.textContent = lang === 'fr' ? '✓' : '';
+    },
+
+    obNext(currId, nextId) {
+        document.getElementById(currId).classList.remove('active');
+        document.getElementById(nextId).classList.add('active');
+    },
+
+    async obRequestNotif() {
+        const ok = await NotificationManager.requestPermission();
+        if (ok) {
+            DB.updateSetting('notificationsEnabled', true);
+            this.toast(i18n.t('notif_on'), 'success');
+        }
+        this.obFinish();
+    },
+
+    obFinish() {
+        localStorage.setItem('deos_onboard_done', 'true');
+        const ob = document.getElementById('onboarding');
+        const app = document.getElementById('app');
+        if (ob) ob.style.display = 'none';
+        if (app) app.style.display = 'block';
+        this.renderHome();
     },
 
     // ─────────────────── ROUTER ───────────────────
@@ -74,12 +137,22 @@ const App = {
             home: 'renderHome',
             add: 'renderAdd',
             stats: 'renderStats',
+            awards: 'renderAwards',
             settings: 'renderSettings'
         };
         if (MAP[s]) this[MAP[s]]();
     },
 
     nav(s) { window.location.hash = s; },
+
+    // ─────────────────── AWARDS ───────────────────
+    renderAwards() {
+        this.renderLeaderboard();
+        this.renderBadges();
+        const ds = StatsManager.getDashboardStats();
+        const bc = document.getElementById('bdg-count');
+        if (bc) bc.textContent = `${ds.badges.unlocked}/${ds.badges.total}`;
+    },
 
     // ─────────────────── HOME ───────────────────
     renderHome() {
@@ -122,22 +195,22 @@ const App = {
 
         // Badge
         const badgeEl = document.getElementById('hab-badge');
-        if (badgeEl) badgeEl.textContent = `${pending.length} left`;
+        if (badgeEl) badgeEl.textContent = `${pending.length} ${i18n.t('left')}`;
 
         if (!habits.length) {
             container.innerHTML = `
         <div class="empty-state">
           <div class="empty-emoji">🏁</div>
-          <h3>No habits yet</h3>
-          <p>Tap + to create your first habit</p>
+          <h3>${i18n.t('no_habits_title')}</h3>
+          <p>${i18n.t('no_habits_body')}</p>
         </div>`;
             return;
         }
 
         let html = '';
         if (pending.length) html += pending.map(h => this.hcard(h)).join('');
-        if (other.length) html += `<p style="font-size:13px;font-weight:600;color:var(--text-3);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.5px">Skipped / Later</p>` + other.map(h => this.hcard(h)).join('');
-        if (done.length) html += `<p style="font-size:13px;font-weight:600;color:var(--green);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.5px">Completed ✓</p>` + done.map(h => this.hcard(h)).join('');
+        if (other.length) html += `<p style="font-size:13px;font-weight:600;color:var(--text-3);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.5px">${i18n.t('skipped_later')}</p>` + other.map(h => this.hcard(h)).join('');
+        if (done.length) html += `<p style="font-size:13px;font-weight:600;color:var(--green);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.5px">${i18n.t('completed')} ✓</p>` + done.map(h => this.hcard(h)).join('');
 
         container.innerHTML = html;
     },
@@ -191,7 +264,11 @@ const App = {
                 BadgeManager.checkAndUnlockBadges();
             }
             const name = DB.getHabitById(habitId)?.name || '';
-            const msgs = { done: `✅ "${name}" done!`, skipped: `⏭ Skipped`, postponed: `🔄 Later` };
+            const msgs = {
+                done: `✅ "${name}" ${i18n.t('done')}!`,
+                skipped: `⏭ ${i18n.t('skipped_later').split(' / ')[0].trim()}`,
+                postponed: `🔄 ${i18n.t('skipped_later').split(' / ')[1]?.trim() || i18n.t('skipped_later')}`
+            };
             this.toast(msgs[action] || '👍', action === 'done' ? 'success' : 'info');
         }
         this.renderHome();
@@ -229,7 +306,7 @@ const App = {
         this.setVal('f-name', h?.name || '');
         this.setVal('f-desc', h?.description || '');
         this.setVal('f-time', h?.reminderTime || '');
-        this.setText('add-screen-title', habitId ? 'Edit Habit' : 'New Habit');
+        this.setText('add-screen-title', habitId ? i18n.t('edit_habit') : i18n.t('new_habit'));
 
         this.renderIconGrid();
         this.renderDayRow();
@@ -255,7 +332,7 @@ const App = {
     renderDayRow() {
         const c = document.getElementById('day-row');
         if (!c) return;
-        const lbl = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+        const lbl = i18n.days();
         c.innerHTML = lbl.map((l, i) =>
             `<button class="day-btn ${this.selDays.includes(i) ? 'sel' : ''}" onclick="App.toggleDay(${i})">${l}</button>`
         ).join('');
@@ -271,7 +348,7 @@ const App = {
         const c = document.getElementById('prio-row');
         if (!c) return;
         c.innerHTML = Object.entries(PRIORITY_LEVELS).map(([k, p]) =>
-            `<button class="prio-btn ${k === this.selPriority ? 'sel' : ''}" onclick="App.pickPrio('${k}')">${p.label}</button>`
+            `<button class="prio-btn ${k === this.selPriority ? 'sel' : ''}" onclick="App.pickPrio('${k}')">${i18n.t(k.toLowerCase())}</button>`
         ).join('');
     },
 
@@ -296,8 +373,8 @@ const App = {
 
     saveHabit() {
         const name = document.getElementById('f-name')?.value?.trim();
-        if (!name) { this.toast('Enter a habit name', 'error'); return; }
-        if (!this.selDays.length) { this.toast('Pick at least one day', 'error'); return; }
+        if (!name) { this.toast(i18n.t('enter_name'), 'error'); return; }
+        if (!this.selDays.length) { this.toast(i18n.t('pick_day'), 'error'); return; }
         const data = {
             name,
             description: document.getElementById('f-desc')?.value?.trim() || '',
@@ -307,13 +384,20 @@ const App = {
             priority: this.selPriority,
             color: this.selColor
         };
+        let result;
         if (this.editId) {
-            HabitManager.updateHabit(this.editId, data);
-            this.toast(`"${name}" updated ✨`, 'success');
+            result = HabitManager.updateHabit(this.editId, data);
+            this.toast(`"${name}" ${i18n.t('updated')}`, 'success');
         } else {
-            HabitManager.createHabit(data);
-            this.toast(`"${name}" created 🎯`, 'success');
+            result = HabitManager.createHabit(data);
+            this.toast(`"${name}" ${i18n.t('created')}`, 'success');
         }
+
+        // Auto-schedule alarm if time is set
+        if (data.reminderTime && result) {
+            NotificationManager.scheduleHabitReminder(result);
+        }
+
         BadgeManager.checkAndUnlockBadges();
         this.nav('home');
     },
@@ -326,7 +410,7 @@ const App = {
 
         this.setText('d-icon-box', habit.icon);
         this.setText('d-name', habit.name);
-        this.setText('d-desc', habit.description || 'No description');
+        this.setText('d-desc', habit.description || i18n.t('notes_placeholder'));
         this.animateNum('d-streak', streak);
         this.animateNum('d-best', bestStreak);
         this.animateNum('d-done', done);
@@ -334,6 +418,15 @@ const App = {
 
         const bar = document.getElementById('d-bar');
         if (bar) { bar.style.width = `${completionRate}%`; bar.style.background = habit.color || 'var(--red)'; }
+
+        // Reminder Status Card
+        this.setText('d-time-display', habit.reminderTime || i18n.t('no_reminder_set') || 'No reminder');
+        const st = document.getElementById('d-notif-status');
+        const hasNotif = !!habit.reminderTime;
+        if (st) {
+            st.textContent = hasNotif ? 'ON' : 'OFF';
+            st.className = `notif-pill ${hasNotif ? 'on' : ''}`;
+        }
 
         const wcal = document.getElementById('d-wcal');
         if (wcal) wcal.innerHTML = last7Days.map(d => `
@@ -352,14 +445,16 @@ const App = {
 
     confirmDelete(id, name) {
         const m = document.getElementById('confirm-modal');
-        this.setText('conf-title', 'Delete Habit');
-        this.setText('conf-text', `Delete "${name}"? All history will be erased.`);
+        this.setText('conf-title', i18n.t('delete_habit'));
+        this.setText('conf-text', i18n.t('delete_confirm', name));
         if (m) {
             m.classList.add('active');
+            this.setText('conf-yes', i18n.t('delete_btn'));
+            this.setText('conf-no', i18n.t('cancel'));
             document.getElementById('conf-yes').onclick = () => {
                 HabitManager.deleteHabit(id);
                 m.classList.remove('active');
-                this.toast(`"${name}" deleted`, 'info');
+                this.toast(`"${name}" ${i18n.t('deleted')}`, 'info');
                 this.nav('home');
             };
             document.getElementById('conf-no').onclick = () => m.classList.remove('active');
@@ -449,7 +544,7 @@ const App = {
         const c = document.getElementById('lb-list');
         if (!c) return;
         const habits = HabitManager.getAllHabits();
-        if (!habits.length) { c.innerHTML = '<p style="color:var(--text-3);padding:8px 0">No habits yet</p>'; return; }
+        if (!habits.length) { c.innerHTML = `<p style="color:var(--text-3);padding:8px 0">${i18n.t('no_habits_title')}</p>`; return; }
 
         const ranked = habits.map(h => ({
             ...h,
@@ -494,6 +589,12 @@ const App = {
         const s = DB.getSettings();
         const tog = document.getElementById('notif-toggle');
         if (tog) tog.classList.toggle('on', s.notificationsEnabled);
+
+        // Language labels
+        const enCheck = document.getElementById('lang-en-check');
+        const frCheck = document.getElementById('lang-fr-check');
+        if (enCheck) enCheck.textContent = i18n.lang === 'en' ? '✓' : '';
+        if (frCheck) frCheck.textContent = i18n.lang === 'fr' ? '✓' : '';
     },
 
     async toggleNotif() {
@@ -501,20 +602,20 @@ const App = {
         const on = !s.notificationsEnabled;
         if (on) {
             const ok = await NotificationManager.requestPermission();
-            if (!ok) { this.toast('Notifications blocked in browser settings', 'error'); return; }
+            if (!ok) { this.toast(i18n.t('notif_blocked'), 'error'); return; }
             NotificationManager.rescheduleAll();
         } else {
             NotificationManager.cancelAllReminders();
         }
         DB.updateSetting('notificationsEnabled', on);
         this.renderSettings();
-        this.toast(on ? '🔔 Notifications on' : 'Notifications off', on ? 'success' : 'info');
+        this.toast(on ? `🔔 ${i18n.t('notif_on')}` : i18n.t('notif_off'), on ? 'success' : 'info');
     },
 
     sendTestNotif() {
         const q = QuoteManager.getTodayQuote();
         NotificationManager.showNotification({ title: 'DeOs Discipline 🔥', body: `"${q.text}" — ${q.author}`, tag: 'test' });
-        this.toast('Test notification sent 🔔', 'success');
+        this.toast(`${i18n.t('send_test')} 🔔`, 'success');
     },
 
     exportData() {
@@ -523,18 +624,20 @@ const App = {
         a.href = URL.createObjectURL(blob);
         a.download = `deos-backup-${new Date().toISOString().split('T')[0]}.json`;
         a.click();
-        this.toast('Data exported 💾', 'success');
+        this.toast(i18n.t('export') + ' 💾', 'success');
     },
 
     resetData() {
         const m = document.getElementById('confirm-modal');
-        this.setText('conf-title', 'Reset Everything');
-        this.setText('conf-text', 'This will delete all habits and history. This cannot be undone!');
+        this.setText('conf-title', i18n.t('reset_all'));
+        this.setText('conf-text', i18n.t('reset_confirm') || 'This will delete everything!');
         if (m) {
             m.classList.add('active');
+            this.setText('conf-yes', i18n.t('delete_btn'));
+            this.setText('conf-no', i18n.t('cancel'));
             document.getElementById('conf-yes').onclick = () => {
                 DB.clearAll(); m.classList.remove('active');
-                this.toast('Data cleared', 'info');
+                this.toast(i18n.t('reset_all'), 'info');
                 setTimeout(() => location.reload(), 800);
             };
             document.getElementById('conf-no').onclick = () => m.classList.remove('active');
@@ -613,13 +716,95 @@ const App = {
         el.style.strokeDashoffset = c - (percent / 100) * c;
     },
 
+    updateUIStrings() {
+        // Splash
+        this.setText('splash-sub', i18n.t('splash_subtitle'));
+
+        // Onboarding
+        this.setText('ob-lang-title', i18n.t('onboard_lang'));
+        this.setText('ob-lang-next', i18n.t('onboard_next'));
+        this.setText('ob-notif-title', i18n.t('onboard_notif_title'));
+        this.setText('ob-notif-body', i18n.t('onboard_notif_body'));
+        this.setText('ob-allow', i18n.t('onboard_notif_btn'));
+        this.setText('ob-skip', i18n.t('onboard_notif_skip'));
+
+        // Home
+        this.setText('ring-lbl-text', i18n.t('done'));
+        this.setText('hero-streak-lbl', i18n.t('streak'));
+        this.setText('hero-done-lbl', i18n.t('done'));
+        this.setText('hero-score-lbl', i18n.t('score'));
+        this.setText('inspiration-lbl', i18n.t('inspiration'));
+        this.setText('today-lbl', i18n.t('today'));
+
+        // Add Habit
+        this.setText('add-cancel', i18n.t('cancel'));
+        this.setText('add-save', i18n.t('done_btn'));
+        this.setText('icon-tap-lbl', i18n.t('icon'));
+        this.setText('info-lbl', i18n.t('info'));
+        this.setText('name-lbl', i18n.t('name_label'));
+        this.setText('notes-lbl', i18n.t('notes_label'));
+        this.setText('reminder-lbl', i18n.t('reminder_label'));
+        this.setText('schedule-lbl', i18n.t('schedule'));
+        this.setText('icon-lbl', i18n.t('icon'));
+        this.setText('priority-lbl', i18n.t('priority'));
+        this.setText('color-lbl', i18n.t('color'));
+        const nameInp = document.getElementById('f-name');
+        if (nameInp) nameInp.placeholder = i18n.t('name_placeholder');
+        const descInp = document.getElementById('f-desc');
+        if (descInp) descInp.placeholder = i18n.t('notes_placeholder');
+
+        // Detail
+        this.setText('d-best-lbl', i18n.t('best_streak'));
+        this.setText('d-done-lbl', i18n.t('completions'));
+        this.setText('comp-rate-lbl', i18n.t('completion_rate'));
+        this.setText('last7-lbl', i18n.t('last_7_days'));
+        this.setText('d-notif-title', i18n.t('notifications'));
+
+        // Stats
+        this.setText('stats-title', i18n.t('statistics'));
+        this.setText('s-score-lbl', i18n.t('score'));
+        this.setText('s-best-lbl', i18n.t('best_streak'));
+        this.setText('s-total-lbl', i18n.t('completions'));
+        this.setText('s-rate-lbl', i18n.t('success_rate'));
+        this.setText('weekly-lbl', i18n.t('weekly_activity'));
+        this.setText('heatmap-lbl', i18n.t('heatmap'));
+        this.setText('lb-lbl', i18n.t('leaderboard'));
+        this.setText('badges-lbl', i18n.t('badges'));
+
+        // Settings
+        this.setText('settings-title', i18n.t('settings'));
+        this.setText('lang-label', i18n.t('language'));
+        this.setText('notif-section-lbl', i18n.t('notifications'));
+        this.setText('reminders-lbl', i18n.t('reminders'));
+        this.setText('send-test-lbl', i18n.t('send_test'));
+        this.setText('data-lbl', i18n.t('data'));
+        this.setText('export-lbl', i18n.t('export'));
+        this.setText('reset-lbl', i18n.t('reset_all'));
+        this.setText('about-lbl', i18n.t('about'));
+        this.setText('lang-setting-lbl', i18n.t('language'));
+        this.setText('version-lbl', 'v3.1');
+        this.setText('current-lang-display', i18n.lang === 'en' ? 'English' : 'Français');
+
+        // Nav
+        this.setText('tab-home', i18n.t('home'));
+        this.setText('tab-stats', i18n.t('stats'));
+        this.setText('tab-awards', i18n.t('awards'));
+        this.setText('tab-profile', i18n.t('profile'));
+
+        // Awards
+        this.setText('tab-awards-title', i18n.t('awards'));
+
+        // Refresh currently active screen
+        this.route();
+    },
+
     // ─────────────────── UTILS ───────────────────
     greeting(h) {
-        if (h < 5) return 'Good night';
-        if (h < 12) return 'Good morning';
-        if (h < 17) return 'Good afternoon';
-        if (h < 21) return 'Good evening';
-        return 'Good night';
+        if (h < 5) return i18n.t('good_night');
+        if (h < 12) return i18n.t('good_morning');
+        if (h < 17) return i18n.t('good_afternoon');
+        if (h < 21) return i18n.t('good_evening');
+        return i18n.t('good_night');
     },
     setText(id, val) { const e = document.getElementById(id); if (e) e.textContent = val; },
     setVal(id, val) { const e = document.getElementById(id); if (e) e.value = val; },

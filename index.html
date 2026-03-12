@@ -23,7 +23,7 @@
     <div class="splash-logo">🔱</div>
     <div class="splash-wordmark">
       <h1>DeOs Discipline</h1>
-      <p>Build your best self</p>
+      <p id="splash-sub">Build your best self</p>
     </div>
     <div class="splash-track">
       <div class="splash-bar"></div>
@@ -31,21 +31,53 @@
   </div>
 
   <!-- ══════════════════════════════════════
+     ONBOARDING (first launch)
+══════════════════════════════════════ -->
+  <div id="onboarding" class="onboard-overlay" style="display:none">
+
+    <!-- Step 1: Language -->
+    <div class="onboard-step active" id="ob-lang">
+      <div class="ob-emoji">🌐</div>
+      <h2 class="ob-title" id="ob-lang-title">Choose your language</h2>
+      <div class="lang-picker">
+        <button class="lang-btn active" id="lang-en" onclick="App.setLang('en')">
+          <span class="lang-flag">🇬🇧</span>
+          <span>English</span>
+        </button>
+        <button class="lang-btn" id="lang-fr" onclick="App.setLang('fr')">
+          <span class="lang-flag">🇫🇷</span>
+          <span>Français</span>
+        </button>
+      </div>
+      <button class="ob-next-btn" id="ob-lang-next" onclick="App.obNext('ob-lang','ob-notif')">Next →</button>
+    </div>
+
+    <!-- Step 2: Notification Permission -->
+    <div class="onboard-step" id="ob-notif">
+      <div class="ob-emoji">🔔</div>
+      <h2 class="ob-title" id="ob-notif-title">Enable Notifications</h2>
+      <p class="ob-body" id="ob-notif-body">We'll remind you automatically when it's time to complete each habit.</p>
+      <button class="ob-allow-btn" id="ob-allow" onclick="App.obRequestNotif()">Allow Notifications</button>
+      <button class="ob-skip-btn" id="ob-skip" onclick="App.obFinish()">Skip</button>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
      APP SHELL
 ══════════════════════════════════════ -->
-  <div id="app">
+  <div id="app" style="display:none">
 
     <!-- ── HOME ── -->
     <section id="screen-home" class="screen active">
       <div class="home-header">
         <div class="home-greeting">
-          <p class="home-time" id="date-text">Thursday, March 12</p>
+          <p class="home-time" id="date-text">Today</p>
           <h1 class="home-title" id="greeting-text">Good morning</h1>
         </div>
         <div class="home-avatar" onclick="App.nav('settings')">🔱</div>
       </div>
 
-      <!-- Progress Hero -->
       <div class="progress-hero">
         <div class="ring-container">
           <svg class="ring-svg" width="100" height="100" viewBox="0 0 100 100">
@@ -59,114 +91,107 @@
             <circle class="ring-fill" id="ring-fill" cx="50" cy="50" r="45" />
           </svg>
           <div class="ring-center">
-            <span class="ring-pct" id="prog-pct">0<small style="font-size:14px;font-weight:600">%</small></span>
-            <span class="ring-lbl">Done</span>
+            <span class="ring-pct" id="prog-pct">0<small style="font-size:12px;font-weight:600">%</small></span>
+            <span class="ring-lbl" id="ring-lbl-text">Done</span>
           </div>
         </div>
-
         <div class="hero-stats">
           <div class="hstat">
             <div class="hstat-icon" style="background:rgba(255,159,10,.14)">🔥</div>
             <div class="hstat-info">
               <div class="hstat-val" id="hero-streak">0</div>
-              <div class="hstat-lbl">Day Streak</div>
+              <div class="hstat-lbl" id="hero-streak-lbl">Day Streak</div>
             </div>
           </div>
           <div class="hstat">
             <div class="hstat-icon" style="background:rgba(48,209,88,.14)">✅</div>
             <div class="hstat-info">
               <div class="hstat-val" id="hero-done">0</div>
-              <div class="hstat-lbl">Completed</div>
+              <div class="hstat-lbl" id="hero-done-lbl">Completed</div>
             </div>
           </div>
           <div class="hstat">
             <div class="hstat-icon" style="background:rgba(10,132,255,.14)">⚡</div>
             <div class="hstat-info">
               <div class="hstat-val" id="hero-score">0</div>
-              <div class="hstat-lbl">Score</div>
+              <div class="hstat-lbl" id="hero-score-lbl">Score</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Quote -->
-      <div class="quote-banner">
+      <div class="quote-banner" onclick="App.refreshQuote()">
         <span class="quote-mark">"</span>
-        <p class="quote-label">✦ Inspiration</p>
-        <p class="quote-text" id="qtext">Loading quote…</p>
-        <p class="quote-author" id="qauthor">— Unknown</p>
+        <p class="quote-label" id="inspiration-lbl">✦ Inspiration</p>
+        <p class="quote-text" id="qtext">…</p>
+        <p class="quote-author" id="qauthor">—</p>
       </div>
 
-      <!-- Habit List -->
       <div class="list-section pb-nav">
         <div class="section-header">
-          <h2 class="section-title">Today</h2>
+          <h2 class="section-title" id="today-lbl">Today</h2>
           <span class="section-badge" id="hab-badge">0 left</span>
         </div>
-        <div id="habits-list"><!-- JS --></div>
+        <div id="habits-list"></div>
       </div>
     </section>
 
     <!-- ── ADD HABIT ── -->
     <section id="screen-add" class="screen">
       <header class="nav-header">
-        <button class="nav-header-btn" onclick="App.nav('home')">Cancel</button>
+        <button class="nav-header-btn" id="add-cancel" onclick="App.nav('home')">Cancel</button>
         <span class="nav-header-title" id="add-screen-title">New Habit</span>
-        <button class="nav-header-btn right" onclick="App.saveHabit()">Done</button>
+        <button class="nav-header-btn right" id="add-save" onclick="App.saveHabit()">Done</button>
       </header>
 
       <div class="icon-preview-box">
         <div class="icon-preview-display" id="icon-display">🎯</div>
-        <span class="icon-preview-label">Tap icon to change</span>
+        <span class="icon-preview-label" id="icon-tap-lbl">Tap icon to change</span>
       </div>
 
-      <!-- Basic info -->
       <div class="ios-section">
-        <p class="ios-section-label">Info</p>
+        <p class="ios-section-label" id="info-lbl">Info</p>
         <div class="ios-group">
           <div class="ios-row">
-            <label class="ios-row-label" for="f-name">Name</label>
-            <input id="f-name" class="ios-input" type="text" placeholder="Habit name" maxlength="40">
+            <label class="ios-row-label" id="name-lbl" for="f-name">Name</label>
+            <input id="f-name" class="ios-input" type="text" maxlength="40" autocomplete="off">
           </div>
           <div class="ios-row">
-            <label class="ios-row-label" for="f-desc">Notes</label>
-            <input id="f-desc" class="ios-input" type="text" placeholder="Optional description">
+            <label class="ios-row-label" id="notes-lbl" for="f-desc">Notes</label>
+            <input id="f-desc" class="ios-input" type="text" autocomplete="off">
           </div>
           <div class="ios-row">
-            <label class="ios-row-label" for="f-time">Reminder</label>
+            <label class="ios-row-label" id="reminder-lbl" for="f-time">Reminder</label>
             <input id="f-time" class="ios-input" type="time">
           </div>
         </div>
       </div>
 
-      <!-- Schedule -->
       <div class="ios-section">
-        <p class="ios-section-label">Schedule</p>
+        <p class="ios-section-label" id="schedule-lbl">Schedule</p>
         <div class="ios-group">
-          <div class="day-row" id="day-row"><!-- JS --></div>
+          <div class="day-row" id="day-row"></div>
         </div>
       </div>
 
-      <!-- Icon -->
       <div class="ios-section">
-        <p class="ios-section-label">Icon</p>
+        <p class="ios-section-label" id="icon-lbl">Icon</p>
         <div class="ios-group">
-          <div class="icon-grid" id="icon-grid"><!-- JS --></div>
+          <div class="icon-grid" id="icon-grid"></div>
         </div>
       </div>
 
-      <!-- Priority + Color -->
       <div class="ios-section">
-        <p class="ios-section-label">Priority</p>
+        <p class="ios-section-label" id="priority-lbl">Priority</p>
         <div class="ios-group">
-          <div class="prio-row" id="prio-row"><!-- JS --></div>
+          <div class="prio-row" id="prio-row"></div>
         </div>
       </div>
 
       <div class="ios-section pb-nav">
-        <p class="ios-section-label">Color</p>
+        <p class="ios-section-label" id="color-lbl">Color</p>
         <div class="ios-group">
-          <div class="color-row" id="color-row"><!-- JS --></div>
+          <div class="color-row" id="color-row"></div>
         </div>
       </div>
     </section>
@@ -174,7 +199,7 @@
     <!-- ── DETAIL ── -->
     <section id="screen-detail" class="screen">
       <header class="detail-header">
-        <button class="back-btn" onclick="App.nav('home')">
+        <button class="back-btn" id="detail-back" onclick="history.back()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <polyline points="15 18 9 12 15 6" />
           </svg>
@@ -206,21 +231,21 @@
         <div class="detail-stats-row">
           <div class="dstat-card">
             <div class="dstat-val" id="d-streak">0</div>
-            <div class="dstat-lbl">Streak 🔥</div>
+            <div class="dstat-lbl">🔥 Streak</div>
           </div>
           <div class="dstat-card">
             <div class="dstat-val" id="d-best">0</div>
-            <div class="dstat-lbl">Best</div>
+            <div class="dstat-lbl" id="d-best-lbl">Best</div>
           </div>
           <div class="dstat-card">
             <div class="dstat-val" id="d-done">0</div>
-            <div class="dstat-lbl">Total</div>
+            <div class="dstat-lbl" id="d-done-lbl">Total</div>
           </div>
         </div>
 
         <div class="comp-bar-card">
           <div class="comp-bar-header">
-            <span class="comp-bar-lbl">Completion Rate</span>
+            <span class="comp-bar-lbl" id="comp-rate-lbl">Completion Rate</span>
             <span class="comp-bar-pct" id="d-rate">0%</span>
           </div>
           <div class="comp-track">
@@ -229,8 +254,22 @@
         </div>
 
         <div class="stats-card">
-          <p class="stats-card-title">Last 7 Days</p>
-          <div class="wcal" id="d-wcal"><!-- JS --></div>
+          <p class="stats-card-title" id="last7-lbl">Last 7 Days</p>
+          <div class="wcal" id="d-wcal"></div>
+        </div>
+
+        <div class="stats-card" style="margin-top:12px">
+          <p class="stats-card-title" id="d-notif-title">Reminder</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:20px">⏰</span>
+              <div>
+                <p style="font-size:15px;font-weight:600" id="d-time-display">No reminder set</p>
+                <p style="font-size:12px;color:var(--text-3)">Auto-scheduled on save</p>
+              </div>
+            </div>
+            <div id="d-notif-status" class="notif-pill">—</div>
+          </div>
         </div>
       </div>
     </section>
@@ -238,10 +277,9 @@
     <!-- ── STATS ── -->
     <section id="screen-stats" class="screen">
       <div class="stats-header">
-        <h1>Statistics</h1>
+        <h1 id="stats-title">Statistics</h1>
       </div>
 
-      <!-- Score card -->
       <div class="score-card">
         <div class="score-ring-wrap">
           <svg width="100" height="100" viewBox="0 0 100 100" style="transform:rotate(-90deg)">
@@ -250,7 +288,7 @@
           </svg>
           <div class="score-center">
             <span class="score-num" id="s-score">0</span>
-            <span class="score-label-sm">Score</span>
+            <span class="score-label-sm" id="s-score-lbl">Score</span>
           </div>
         </div>
         <div class="score-details">
@@ -258,49 +296,54 @@
             <div class="sdet-ic" style="background:rgba(255,159,10,.14)">🔥</div>
             <div class="sdet-info">
               <div class="sdet-val" id="s-best">0</div>
-              <div class="sdet-lbl">Best Streak</div>
+              <div class="sdet-lbl" id="s-best-lbl">Best Streak</div>
             </div>
           </div>
           <div class="sdet">
             <div class="sdet-ic" style="background:rgba(48,209,88,.14)">✅</div>
             <div class="sdet-info">
               <div class="sdet-val" id="s-total">0</div>
-              <div class="sdet-lbl">Completions</div>
+              <div class="sdet-lbl" id="s-total-lbl">Completions</div>
             </div>
           </div>
           <div class="sdet">
             <div class="sdet-ic" style="background:rgba(10,132,255,.14)">📊</div>
             <div class="sdet-info">
               <div class="sdet-val" id="s-rate">0%</div>
-              <div class="sdet-lbl">Success Rate</div>
+              <div class="sdet-lbl" id="s-rate-lbl">Success Rate</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Week chart -->
       <div class="stats-section pb-nav">
         <div class="stats-card">
-          <p class="stats-card-title">Weekly Activity</p>
-          <div class="week-chart" id="bar-chart"><!-- JS --></div>
+          <p class="stats-card-title" id="weekly-lbl">Weekly Activity</p>
+          <div class="week-chart" id="bar-chart"></div>
         </div>
-
         <div class="stats-card">
-          <p class="stats-card-title">90-Day Heatmap</p>
-          <div class="hm-grid" id="heatmap"><!-- JS --></div>
+          <p class="stats-card-title" id="heatmap-lbl">90-Day Heatmap</p>
+          <div class="hm-grid" id="heatmap"></div>
         </div>
+      </div>
+    </section>
 
+    <!-- ── AWARDS ── -->
+    <section id="screen-awards" class="screen">
+      <div class="stats-header">
+        <h1 id="tab-awards-title">Awards</h1>
+      </div>
+      <div class="stats-section pb-nav">
         <div class="stats-card">
-          <p class="stats-card-title">Leaderboard</p>
-          <div id="lb-list"><!-- JS --></div>
+          <p class="stats-card-title" id="lb-lbl">Leaderboard</p>
+          <div id="lb-list"></div>
         </div>
-
         <div class="stats-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-            <p class="stats-card-title" style="margin:0">Badges</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+            <p class="stats-card-title" style="margin:0" id="badges-lbl">Badges</p>
             <span style="font-size:12px;color:var(--text-3)" id="bdg-count"></span>
           </div>
-          <div class="badge-grid" id="bdg-grid"><!-- JS --></div>
+          <div class="badge-grid" id="bdg-grid"></div>
         </div>
       </div>
     </section>
@@ -308,22 +351,49 @@
     <!-- ── SETTINGS ── -->
     <section id="screen-settings" class="screen">
       <div class="settings-header">
-        <h1>Settings</h1>
+        <h1 id="settings-title">Settings</h1>
       </div>
 
+      <!-- Language -->
       <div class="settings-section">
-        <p class="settings-label">Notifications</p>
+        <p class="settings-label" id="lang-label">Language</p>
+        <div class="settings-group">
+          <div class="settings-row" onclick="App.setLang('en')">
+            <div class="settings-icon">🇬🇧</div>
+            <span class="settings-row-label">English</span>
+            <span id="lang-en-check" class="settings-row-value" style="color:var(--red)">✓</span>
+          </div>
+          <div class="settings-row" onclick="App.setLang('fr')">
+            <div class="settings-icon">🇫🇷</div>
+            <span class="settings-row-label">Français</span>
+            <span id="lang-fr-check" class="settings-row-value" style="color:var(--red)"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="settings-section">
+        <p class="settings-label" id="notif-section-lbl">Notifications</p>
         <div class="settings-group">
           <div class="settings-row" onclick="App.toggleNotif()">
             <div class="settings-icon" style="background:rgba(255,159,10,.14)">🔔</div>
-            <span class="settings-row-label">Reminders</span>
+            <span class="settings-row-label" id="reminders-lbl">Reminders</span>
             <div id="notif-toggle" class="ios-toggle">
               <div class="toggle-knob"></div>
             </div>
           </div>
+          <div class="settings-row" id="notif-perm-row">
+            <div class="settings-icon" style="background:rgba(0,122,255,.1)">🛡️</div>
+            <div style="flex:1">
+              <p class="settings-row-label">Permission</p>
+              <p style="font-size:12px;color:var(--text-3)" id="perm-status-lbl">Not requested</p>
+            </div>
+            <button id="req-perm-btn" onclick="App.requestPermission()"
+              style="background:var(--red);color:white;font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;flex-shrink:0">Allow</button>
+          </div>
           <div class="settings-row" onclick="App.sendTestNotif()">
             <div class="settings-icon" style="background:rgba(10,132,255,.14)">📣</div>
-            <span class="settings-row-label">Send Test</span>
+            <span class="settings-row-label" id="send-test-lbl">Test Notification</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
               style="width:16px;height:16px;stroke-width:2;color:var(--text-3)">
               <polyline points="9 18 15 12 9 6" />
@@ -332,12 +402,13 @@
         </div>
       </div>
 
+      <!-- Data -->
       <div class="settings-section">
-        <p class="settings-label">Data</p>
+        <p class="settings-label" id="data-lbl">Data</p>
         <div class="settings-group">
           <div class="settings-row" onclick="App.exportData()">
             <div class="settings-icon" style="background:rgba(48,209,88,.14)">💾</div>
-            <span class="settings-row-label">Export Data</span>
+            <span class="settings-row-label" id="export-lbl">Export Data</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
               style="width:16px;height:16px;stroke-width:2;color:var(--text-3)">
               <polyline points="9 18 15 12 9 6" />
@@ -345,48 +416,54 @@
           </div>
           <div class="settings-row" onclick="App.resetData()">
             <div class="settings-icon" style="background:rgba(255,59,48,.1)">⚠️</div>
-            <span class="settings-row-label danger">Reset All Data</span>
+            <span class="settings-row-label danger" id="reset-lbl">Reset All Data</span>
           </div>
         </div>
       </div>
 
+      <!-- About -->
       <div class="settings-section pb-nav">
-        <p class="settings-label">About</p>
+        <p class="settings-label" id="about-lbl">About</p>
         <div class="settings-group">
-          <div class="settings-row">
+          <div class="settings-row" style="cursor:default">
             <div class="settings-icon" style="background:rgba(191,90,242,.14)">🔱</div>
             <span class="settings-row-label">DeOs Discipline</span>
-            <span class="settings-row-value">v3.0</span>
+            <span class="settings-row-value" id="version-lbl">v3.1</span>
+          </div>
+          <div class="settings-row" onclick="App.obStart()" style="cursor:pointer">
+            <div class="settings-icon" style="background:rgba(255,56,92,.1)">🌐</div>
+            <span class="settings-row-label" id="lang-setting-lbl">Language</span>
+            <span class="settings-row-value" id="current-lang-display">English</span>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ── TAB BAR ── -->
-    <nav class="tab-bar">
+    <nav class="tab-bar" id="tab-bar">
       <button class="tab-item active" data-s="home" onclick="App.nav('home')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
           <polyline points="9 22 9 12 15 12 15 22" />
         </svg>
-        <span>Home</span>
+        <span id="tab-home">Home</span>
       </button>
       <button class="tab-item" data-s="stats" onclick="App.nav('stats')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M12 20V10M18 20V4M6 20v-4" />
         </svg>
-        <span>Stats</span>
+        <span id="tab-stats">Stats</span>
       </button>
       <div class="tab-fab">
-        <button class="fab-btn" onclick="App.nav('add')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <button class="fab-btn" onclick="App.nav('add')" id="tab-add-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:22px;height:22px">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
         </button>
       </div>
-      <button class="tab-item" data-s="stats" onclick="App.nav('stats')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <button class="tab-item" data-s="awards" onclick="App.nav('awards')" id="tab-awards-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M6 9H4.5a2.5 2.5 0 010-5H6" />
           <path d="M18 9h1.5a2.5 2.5 0 000-5H18" />
           <path d="M4 22h16" />
@@ -394,30 +471,21 @@
           <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
           <path d="M18 2H6v7a6 6 0 0012 0V2z" />
         </svg>
-        <span>Awards</span>
+        <span id="tab-awards">Awards</span>
       </button>
       <button class="tab-item" data-s="settings" onclick="App.nav('settings')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <circle cx="12" cy="8" r="4" />
           <path d="M2 20c0-4 4-7 10-7s10 3 10 7" />
         </svg>
-        <span>Profile</span>
+        <span id="tab-profile">Profile</span>
       </button>
     </nav>
 
   </div><!-- #app -->
 
-  <!-- Overlays -->
-  <div id="app-toast"></div>
-
-  <div id="install-banner">
-    <div>
-      <p class="install-text">Install DeOs Discipline</p>
-      <p class="install-sub">Add to Home Screen for offline use</p>
-    </div>
-    <button class="install-btn" onclick="App.promptInstall()">Install</button>
-    <button onclick="App.hideInstallBanner()" style="color:var(--text-3);font-size:20px;padding:0 4px;">×</button>
-  </div>
+  <!-- ── OVERLAYS ── -->
+  <div id="app-toast" class="ios-toast-pill"></div>
 
   <div id="confirm-modal" class="modal-bg">
     <div class="modal-sheet">
@@ -435,7 +503,7 @@
       <div class="ms-emoji">🔥</div>
       <div class="ms-streak" id="ms-streak">7 Days</div>
       <p class="ms-msg" id="ms-msg">One week strong!</p>
-      <button class="ms-close" onclick="App.closeMilestone()">Keep Going! 💪</button>
+      <button class="ms-close" id="ms-close" onclick="App.closeMilestone()">Keep Going! 💪</button>
     </div>
   </div>
 
@@ -448,7 +516,18 @@
     <span class="bt-em" id="bt-emoji">🏆</span>
   </div>
 
-  <!-- Scripts -->
+  <div id="install-banner">
+    <div>
+      <p class="install-text" id="install-text">Install DeOs Discipline</p>
+      <p class="install-sub" id="install-sub">Add to Home Screen for offline use</p>
+    </div>
+    <button class="install-btn" id="install-btn" onclick="App.promptInstall()">Install</button>
+    <button onclick="App.hideInstallBanner()"
+      style="color:var(--text-3);font-size:22px;padding:0 4px;line-height:1">×</button>
+  </div>
+
+  <!-- Scripts — ORDER MATTERS -->
+  <script src="js/i18n.js"></script>
   <script src="js/db.js"></script>
   <script src="js/quotes.js"></script>
   <script src="js/badges.js"></script>

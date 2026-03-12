@@ -1917,3 +1917,148 @@ textarea {
 .center {
   text-align: center;
 }
+
+/* ──────────────────────────────────────────
+   ONBOARDING
+────────────────────────────────────────── */
+.onboard-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.onboard-step {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.onboard-step.active {
+  display: flex;
+  animation: slideIn 0.5s var(--spring);
+}
+
+.ob-emoji {
+  font-size: 80px;
+  margin-bottom: 30px;
+}
+
+.ob-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+
+.ob-body {
+  font-size: 17px;
+  color: var(--text-3);
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.ob-next-btn,
+.ob-allow-btn,
+.ob-start-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--red);
+  color: white;
+  border-radius: var(--r-md);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  transition: transform 0.2s;
+}
+
+.ob-skip-btn {
+  font-size: 16px;
+  color: var(--text-3);
+  font-weight: 600;
+}
+
+.ob-next-btn:active,
+.ob-allow-btn:active,
+.ob-start-btn:active {
+  transform: scale(0.96);
+}
+
+/* Lang Picker */
+.lang-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 20px;
+  background: var(--surface-1);
+  border-radius: var(--r-md);
+  font-size: 18px;
+  font-weight: 600;
+  border: 2px solid transparent;
+  transition: 0.2s;
+}
+
+.lang-btn.active {
+  border-color: var(--red);
+  background: var(--red-light);
+}
+
+.lang-flag {
+  font-size: 24px;
+}
+
+/* Notification Pill */
+.notif-pill {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text-3);
+}
+
+.notif-pill.on {
+  background: rgba(48, 209, 88, 0.15);
+  color: var(--green);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

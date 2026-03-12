@@ -55,7 +55,7 @@ const NotificationManager = {
         const timerId = setTimeout(() => {
             this.showNotification({
                 title: 'DeOs Discipline 🔥',
-                body: `Time to complete "${habit.name}"! Stay disciplined!`,
+                body: i18n.t('notif_body', habit.name),
                 tag: habit.id,
                 icon: '/icons/icon-192.png'
             });
@@ -93,8 +93,8 @@ const NotificationManager = {
                     tag,
                     vibrate: [200, 100, 200],
                     actions: [
-                        { action: 'done', title: '✅ Done' },
-                        { action: 'snooze', title: '⏰ Snooze' }
+                        { action: 'done', title: `✅ ${i18n.t('done')}` },
+                        { action: 'snooze', title: `⏰ ${i18n.t('reminder_label')}` }
                     ]
                 });
             });
@@ -115,7 +115,7 @@ const NotificationManager = {
         setTimeout(() => {
             const quote = QuoteManager.getTodayQuote();
             this.showNotification({
-                title: 'DeOs Discipline - Daily Quote',
+                title: `DeOs Discipline - ${i18n.t('inspiration')}`,
                 body: `"${quote.text}" — ${quote.author}`,
                 tag: 'daily-quote'
             });
@@ -140,8 +140,8 @@ const NotificationManager = {
         const total = HabitManager.getTodayHabits().length;
 
         this.showNotification({
-            title: 'DeOs Discipline - Daily Summary',
-            body: `Today: ${completed}/${total} habits complete (${progress}%) — Keep it up! 💪`,
+            title: `DeOs Discipline - ${i18n.t('today')}`,
+            body: `${i18n.t('today')}: ${completed}/${total} (${progress}%) — ${i18n.t('good_night')}! 💪`,
             tag: 'daily-summary'
         });
     }
