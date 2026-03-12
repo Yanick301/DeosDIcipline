@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, BarChart2, Award, User, Plus, Users, Timer, Book } from 'lucide-react';
 import { useHabits } from '../context/HabitContext';
 
+// Simple media query hook
+const useMediaQuery = (query) => {
+    const [matches, setMatches] = useState(false);
+    useEffect(() => {
+        const media = window.matchMedia(query);
+        if (media.matches !== matches) setMatches(media.matches);
+        const listener = () => setMatches(media.matches);
+        media.addEventListener('change', listener);
+        return () => media.removeEventListener('change', listener);
+    }, [matches, query]);
+    return matches;
+};
+
 const Layout = ({ children, activeTab, setActiveTab }) => {
     const { t } = useHabits();
+    const mdAndUp = useMediaQuery('(min-width: 768px)');
 
     const tabs = [
         { id: 'home', icon: Home, label: t('home') },
@@ -17,13 +31,14 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
     ];
 
     return (
-        <div className="flex flex-col min-h-screen bg-surface-100 text-white font-sans selection:bg-airbnb/30 relative overflow-hidden">
+        <div className="flex min-h-screen bg-surface-100 text-white font-sans selection:bg-airbnb/30 relative overflow-hidden">
             {/* Magnificent Background Effects */}
             <div className="bg-noise" />
             <div className="ambient-glow" />
             <div className="fixed top-0 left-0 w-full h-32 bg-gradient-to-b from-obsidian to-transparent pointer-events-none z-10 opacity-60" />
 
-            <main className="flex-1 pb-40 max-w-5xl mx-auto w-full px-6 pt-16 relative z-10">
+            {/* Main Content Area */}
+            <main className="flex-1 pb-40 md:pl-28 lg:pl-64 max-w-7xl mx-auto w-full px-6 pt-16 relative z-10 transition-all duration-300">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={activeTab}
@@ -37,19 +52,50 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
                 </AnimatePresence>
             </main>
 
-            {/* Floating Tab Bar */}
-            <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[600px] h-20 bg-surface-200/40 backdrop-blur-3xl border border-white/10 rounded-[32px] flex items-center justify-between px-6 z-50 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+            {/* Responsive Navigation */}
+            <nav className="
+                fixed z-50 transition-all duration-500
+                /* Mobile: Bottom Bar */
+                bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[600px] h-20 
+                flex flex-row items-center justify-between px-6 
+                bg-surface-200/40 backdrop-blur-3xl border border-white/10 rounded-[32px] 
+                shadow-[0_20px_50px_rgba(0,0,0,0.5)]
+                
+                /* Desktop: Left Sidebar */
+                md:top-0 md:left-0 md:bottom-auto md:translate-x-0 md:w-24 md:h-screen md:rounded-none md:border-t-0 md:border-l-0 md:border-b-0 md:border-r 
+                md:flex-col md:justify-center md:py-10 md:space-y-6 md:bg-surface-200/60
+                
+                /* Large Desktop: Expanded Sidebar */
+                lg:w-64 lg:items-start lg:pl-8
+            ">
+
+                {/* Desktop Logo Space */}
+                <div className="hidden lg:block absolute top-10 left-8">
+                    <h2 className="text-xl font-black text-white tracking-tighter flex items-center gap-2">
+                        <span className="text-airbnb">DeOs</span> Discipline
+                    </h2>
+                </div>
+
                 {tabs.map((tab) => {
                     if (tab.isFab) {
                         return (
-                            <div key="add-fab" className="relative -top-8 px-1">
+                            <div key="add-fab" className="relative md:static md:w-full lg:px-4">
                                 <motion.button
-                                    whileHover={{ scale: 1.1, y: -2 }}
-                                    whileTap={{ scale: 0.9 }}
+                                    whileHover={{ scale: 1.05, y: -2 }}
+                                    whileTap={{ scale: 0.95 }}
                                     onClick={() => setActiveTab('add')}
-                                    className="w-16 h-16 bg-airbnb rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(255,56,92,0.4)] text-white border-4 border-surface-100"
+                                    className="
+                                        w-16 h-16 bg-airbnb rounded-full flex items-center justify-center text-white shadow-[0_10px_25px_rgba(255,56,92,0.4)]
+                                        /* Mobile positioning */
+                                        absolute -top-12 left-1/2 -translate-x-1/2 border-4 border-surface-100
+                                        /* Desktop positioning */
+                                        md:static md:w-14 md:h-14 md:mx-auto md:translate-x-0 md:border-none
+                                        /* Large Desktop */
+                                        lg:w-full lg:h-14 lg:rounded-2xl lg:gap-3
+                                    "
                                 >
-                                    <Plus size={32} strokeWidth={3} />
+                                    <Plus size={mdAndUp ? 24 : 32} strokeWidth={3} />
+                                    <span className="hidden lg:block font-black tracking-widest uppercase">New Habit</span>
                                 </motion.button>
                             </div>
                         );
@@ -60,29 +106,62 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`flex flex-col items-center justify-center min-w-[44px] h-full relative transition-all duration-500`}
+                            className={`
+                                flex flex-col items-center justify-center transition-all duration-300
+                                /* Mobile */
+                                relative min-w-[44px] h-full
+                                /* Desktop */
+                                md:w-full md:h-14 md:rounded-2xl
+                                /* Large Desktop */
+                                lg:flex-row lg:justify-start lg:px-4 lg:gap-4 lg:w-[calc(100%-2rem)]
+                                ${isActive ? 'text-airbnb' : 'text-text-tertiary hover:text-white/60'}
+                            `}
                         >
+                            {/* Icon Container */}
                             <motion.div
-                                animate={isActive ? { y: -4 } : { y: 0 }}
+                                animate={{
+                                    y: (!mdAndUp && isActive) ? -4 : 0
+                                }}
                                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                                className={`relative p-2 rounded-2xl transition-colors ${isActive ? 'bg-airbnb/10 text-airbnb' : 'text-text-tertiary hover:text-white/40'}`}
+                                className={`
+                                    relative p-2 rounded-2xl transition-colors
+                                    ${isActive && mdAndUp ? 'lg:bg-transparent lg:text-airbnb' : ''}
+                                `}
                             >
                                 <tab.icon
-                                    size={20}
+                                    size={24}
                                     strokeWidth={isActive ? 2.5 : 2}
-                                    className="transition-all duration-300"
                                 />
-                                {isActive && (
+                                {isActive && !mdAndUp && (
                                     <motion.div
                                         layoutId="tab-pill"
-                                        className="absolute inset-0 bg-airbnb/5 rounded-2xl -z-10"
+                                        className="absolute inset-0 bg-airbnb/10 rounded-2xl -z-10"
                                         transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                                     />
                                 )}
                             </motion.div>
-                            <span className={`absolute bottom-2 text-[7px] font-black tracking-[0.15em] uppercase transition-all duration-500 ${isActive ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-75'}`}>
+
+                            {/* Label */}
+                            <span className={`
+                                font-black tracking-[0.15em] uppercase transition-all duration-500
+                                /* Mobile Label */
+                                absolute bottom-2 text-[7px]
+                                ${isActive && !mdAndUp ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-75 md:hidden'}
+                                /* Large Desktop Label */
+                                lg:static lg:opacity-100 lg:translate-y-0 lg:scale-100 lg:text-[10px]
+                            `}>
                                 {tab.label}
                             </span>
+
+                            {/* Desktop Active Highlight */}
+                            {isActive && mdAndUp && (
+                                <motion.div
+                                    layoutId="desktop-active"
+                                    className="absolute inset-0 bg-airbnb/5 border-l-2 border-airbnb lg:rounded-2xl lg:border-l-0 -z-10"
+                                    initial={false}
+                                    transition={{ type: 'spring', bounce: 0.2, duration: 0.4 }}
+                                />
+                            )}
                         </button>
                     );
                 })}

@@ -19,7 +19,7 @@ const Profile = () => {
     };
 
     return (
-        <div className="space-y-8 pb-32">
+        <div className="space-y-8 pb-32 max-w-2xl mx-auto">
             <header className="flex flex-col items-center py-8">
                 <div className="relative">
                     <div className="w-24 h-24 bg-gradient-to-tr from-airbnb to-orange-400 rounded-full flex items-center justify-center text-4xl font-black text-white shadow-2xl shadow-airbnb/30 mb-4">

@@ -66,7 +66,7 @@ const Stats = () => {
         i === 0 ? `M ${p.x},${p.y}` : `${acc} L ${p.x},${p.y}`, "");
 
     return (
-        <div className="space-y-12 pb-32">
+        <div className="space-y-12 pb-32 max-w-4xl mx-auto">
             <header className="flex flex-col space-y-2">
                 <h1 className="text-4xl font-black text-white tracking-tighter">{t('statistics')}</h1>
                 <p className="text-gold text-[10px] font-black uppercase tracking-[0.4em] opacity-60">Analytics of Ascension</p>

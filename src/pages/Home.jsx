@@ -126,7 +126,7 @@ const Home = ({ onEdit }) => {
                 ) : (
                     <div className="space-y-8">
                         {/* Pending Items */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                             {pendingHabits.map((h) => (
                                 <HabitCard
                                     key={h.id}
@@ -146,7 +146,7 @@ const Home = ({ onEdit }) => {
                                 <p className="text-[11px] font-black uppercase tracking-widest text-text-tertiary px-1">
                                     {t('skipped_later')}
                                 </p>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                                     {otherHabits.map((h) => (
                                         <HabitCard
                                             key={h.id}
@@ -168,7 +168,7 @@ const Home = ({ onEdit }) => {
                                 <p className="text-[11px] font-black uppercase tracking-widest text-gold px-1">
                                     {t('completed')}
                                 </p>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                                     {doneHabits.map((h) => (
                                         <HabitCard
                                             key={h.id}

@@ -19,8 +19,8 @@ const Awards = () => {
     const filteredBadges = BADGES.filter(b => filter === 'all' || b.rarity === filter);
 
     return (
-        <div className="space-y-10 pb-32">
-            <header className="space-y-1">
+        <div className="space-y-12 pb-32 max-w-4xl mx-auto">
+            <header className="text-center space-y-4 pt-8">
                 <h1 className="text-3xl font-black text-white">{t('awards')}</h1>
                 <p className="text-gold text-[10px] font-black uppercase tracking-[0.4em] opacity-70">
                     The Hall of Discipline
