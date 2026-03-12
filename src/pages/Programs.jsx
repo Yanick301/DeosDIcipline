@@ -38,11 +38,10 @@ const PROGRAMS = [
 
 const Programs = () => {
     const { t, addHabit } = useHabits();
+    const [enrolled, setEnrolled] = useState(null);
 
     const joinProgram = (program) => {
-        // Logic to add all habits of the program
         program.habits.forEach(h => {
-            // Basic implementation: adding them as simple habits
             addHabit({
                 name: h,
                 notes: `Part of ${program.name}`,
@@ -52,7 +51,8 @@ const Programs = () => {
                 reminder: '08:00'
             });
         });
-        alert(`${t('program_enrolled', program.name)}! Check your home screen.`);
+        setEnrolled(program.id);
+        setTimeout(() => setEnrolled(null), 3000);
     };
 
     return (
@@ -106,10 +106,15 @@ const Programs = () => {
 
                             <button
                                 onClick={() => joinProgram(program)}
-                                className="w-full h-14 rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg"
-                                style={{ backgroundColor: program.color, color: 'white', shadowColor: `${program.color}40` }}
+                                disabled={enrolled === program.id}
+                                className={`w-full h-14 rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg ${enrolled === program.id ? 'bg-green-500' : ''}`}
+                                style={{ backgroundColor: enrolled === program.id ? undefined : program.color, color: 'white' }}
                             >
-                                {t('join_program')} <ChevronRight size={18} />
+                                {enrolled === program.id ? (
+                                    <>Check Home Screen <Flame size={18} /></>
+                                ) : (
+                                    <>{t('join_program')} <ChevronRight size={18} /></>
+                                )}
                             </button>
                         </div>
                     </motion.div>
