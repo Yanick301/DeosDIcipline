@@ -41,8 +41,8 @@ const Awards = () => {
                         key={rarity}
                         onClick={() => setFilter(rarity)}
                         className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${filter === rarity
-                                ? 'bg-gold text-obsidian shadow-lg gold-glow'
-                                : 'bg-white/5 text-text-tertiary'
+                            ? 'bg-gold text-obsidian shadow-lg gold-glow'
+                            : 'bg-white/5 text-text-tertiary'
                             }`}
                     >
                         {rarity}
@@ -61,7 +61,7 @@ const Awards = () => {
                     </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                     <AnimatePresence mode="popLayout">
                         {filteredBadges.map((badge, i) => {
                             const isUnlocked = unlockedBadges.includes(badge.id);
@@ -125,8 +125,8 @@ const Awards = () => {
                         <div key={i} className={`flex items-center gap-4 p-4 rounded-xl transition-all ${user.isMe ? 'bg-gold/10' : ''}`}>
                             <div className="flex flex-col items-center justify-center w-8">
                                 <span className={`text-lg font-black ${i === 0 ? 'text-gold' :
-                                        i === 1 ? 'text-slate-300' :
-                                            i === 2 ? 'text-orange-900/40' : 'text-text-tertiary'
+                                    i === 1 ? 'text-slate-300' :
+                                        i === 2 ? 'text-orange-900/40' : 'text-text-tertiary'
                                     }`}>
                                     {i + 1}
                                 </span>

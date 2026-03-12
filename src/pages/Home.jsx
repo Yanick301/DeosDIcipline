@@ -125,52 +125,65 @@ const Home = ({ onEdit }) => {
                         </div>
                     </div>
                 ) : (
-                    <div className="space-y-3">
-                        {pendingHabits.map((h) => (
-                            <HabitCard
-                                key={h.id}
-                                habit={h}
-                                status={null}
-                                dateStr={dateStr}
-                                streak={calculateHabitStreak(h.id)}
-                                onComplete={toggleCompletion}
-                                onNav={(id) => onEdit(id)}
-                            />
-                        ))}
+                    <div className="space-y-8">
+                        {/* Pending Items */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {pendingHabits.map((h) => (
+                                <HabitCard
+                                    key={h.id}
+                                    habit={h}
+                                    status={null}
+                                    dateStr={dateStr}
+                                    streak={calculateHabitStreak(h.id)}
+                                    onComplete={toggleCompletion}
+                                    onNav={(id) => onEdit(id)}
+                                />
+                            ))}
+                        </div>
 
+                        {/* Skipped / Later */}
                         {otherHabits.length > 0 && (
-                            <p className="text-[11px] font-black uppercase tracking-widest text-text-tertiary pt-2 px-1">
-                                {t('skipped_later')}
-                            </p>
+                            <div className="space-y-3">
+                                <p className="text-[11px] font-black uppercase tracking-widest text-text-tertiary px-1">
+                                    {t('skipped_later')}
+                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {otherHabits.map((h) => (
+                                        <HabitCard
+                                            key={h.id}
+                                            habit={h}
+                                            status={completions[h.id]?.[dateStr]}
+                                            dateStr={dateStr}
+                                            streak={calculateHabitStreak(h.id)}
+                                            onComplete={toggleCompletion}
+                                            onNav={(id) => onEdit(id)}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                         )}
-                        {otherHabits.map((h) => (
-                            <HabitCard
-                                key={h.id}
-                                habit={h}
-                                status={completions[h.id]?.[dateStr]}
-                                dateStr={dateStr}
-                                streak={calculateHabitStreak(h.id)}
-                                onComplete={toggleCompletion}
-                                onNav={(id) => onEdit(id)}
-                            />
-                        ))}
 
+                        {/* Completed Items */}
                         {doneHabits.length > 0 && (
-                            <p className="text-[11px] font-black uppercase tracking-widest text-green-400 pt-2 px-1">
-                                {t('completed')}
-                            </p>
+                            <div className="space-y-3">
+                                <p className="text-[11px] font-black uppercase tracking-widest text-gold px-1">
+                                    {t('completed')}
+                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {doneHabits.map((h) => (
+                                        <HabitCard
+                                            key={h.id}
+                                            habit={h}
+                                            status="done"
+                                            dateStr={dateStr}
+                                            streak={calculateHabitStreak(h.id)}
+                                            onComplete={toggleCompletion}
+                                            onNav={(id) => onEdit(id)}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                         )}
-                        {doneHabits.map((h) => (
-                            <HabitCard
-                                key={h.id}
-                                habit={h}
-                                status="done"
-                                dateStr={dateStr}
-                                streak={calculateHabitStreak(h.id)}
-                                onComplete={toggleCompletion}
-                                onNav={(id) => onEdit(id)}
-                            />
-                        ))}
                     </div>
                 )}
             </section>

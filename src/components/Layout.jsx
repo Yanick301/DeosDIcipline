@@ -18,7 +18,7 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
 
     return (
         <div className="flex flex-col min-h-screen bg-surface-100 text-white font-sans selection:bg-airbnb/30">
-            <main className="flex-1 pb-24 max-w-md mx-auto w-full px-4 pt-12">
+            <main className="flex-1 pb-32 max-w-5xl mx-auto w-full px-4 pt-12">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={activeTab}
@@ -33,7 +33,7 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
             </main>
 
             {/* Floating Tab Bar */}
-            <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[420px] h-20 bg-surface-200/40 backdrop-blur-3xl border border-white/10 rounded-[32px] flex items-center justify-between px-4 z-50 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+            <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[600px] h-20 bg-surface-200/40 backdrop-blur-3xl border border-white/10 rounded-[32px] flex items-center justify-between px-6 z-50 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
                 {tabs.map((tab) => {
                     if (tab.isFab) {
                         return (
