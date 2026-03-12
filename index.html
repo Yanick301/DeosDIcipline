@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="DeOs">
+  <link rel="manifest" href="manifest.json">
+  <title>DeOs Discipline</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════
+     SPLASH
+══════════════════════════════════════ -->
+  <div id="splash-overlay">
+    <div class="splash-logo">🔱</div>
+    <div class="splash-wordmark">
+      <h1>DeOs Discipline</h1>
+      <p>Build your best self</p>
+    </div>
+    <div class="splash-track">
+      <div class="splash-bar"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     APP SHELL
+══════════════════════════════════════ -->
+  <div id="app">
+
+    <!-- ── HOME ── -->
+    <section id="screen-home" class="screen active">
+      <div class="home-header">
+        <div class="home-greeting">
+          <p class="home-time" id="date-text">Thursday, March 12</p>
+          <h1 class="home-title" id="greeting-text">Good morning</h1>
+        </div>
+        <div class="home-avatar" onclick="App.nav('settings')">🔱</div>
+      </div>
+
+      <!-- Progress Hero -->
+      <div class="progress-hero">
+        <div class="ring-container">
+          <svg class="ring-svg" width="100" height="100" viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF385C" />
+                <stop offset="100%" stop-color="#E31C5F" />
+              </linearGradient>
+            </defs>
+            <circle class="ring-track" cx="50" cy="50" r="45" />
+            <circle class="ring-fill" id="ring-fill" cx="50" cy="50" r="45" />
+          </svg>
+          <div class="ring-center">
+            <span class="ring-pct" id="prog-pct">0<small style="font-size:14px;font-weight:600">%</small></span>
+            <span class="ring-lbl">Done</span>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="hstat">
+            <div class="hstat-icon" style="background:rgba(255,159,10,.14)">🔥</div>
+            <div class="hstat-info">
+              <div class="hstat-val" id="hero-streak">0</div>
+              <div class="hstat-lbl">Day Streak</div>
+            </div>
+          </div>
+          <div class="hstat">
+            <div class="hstat-icon" style="background:rgba(48,209,88,.14)">✅</div>
+            <div class="hstat-info">
+              <div class="hstat-val" id="hero-done">0</div>
+              <div class="hstat-lbl">Completed</div>
+            </div>
+          </div>
+          <div class="hstat">
+            <div class="hstat-icon" style="background:rgba(10,132,255,.14)">⚡</div>
+            <div class="hstat-info">
+              <div class="hstat-val" id="hero-score">0</div>
+              <div class="hstat-lbl">Score</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quote -->
+      <div class="quote-banner">
+        <span class="quote-mark">"</span>
+        <p class="quote-label">✦ Inspiration</p>
+        <p class="quote-text" id="qtext">Loading quote…</p>
+        <p class="quote-author" id="qauthor">— Unknown</p>
+      </div>
+
+      <!-- Habit List -->
+      <div class="list-section pb-nav">
+        <div class="section-header">
+          <h2 class="section-title">Today</h2>
+          <span class="section-badge" id="hab-badge">0 left</span>
+        </div>
+        <div id="habits-list"><!-- JS --></div>
+      </div>
+    </section>
+
+    <!-- ── ADD HABIT ── -->
+    <section id="screen-add" class="screen">
+      <header class="nav-header">
+        <button class="nav-header-btn" onclick="App.nav('home')">Cancel</button>
+        <span class="nav-header-title" id="add-screen-title">New Habit</span>
+        <button class="nav-header-btn right" onclick="App.saveHabit()">Done</button>
+      </header>
+
+      <div class="icon-preview-box">
+        <div class="icon-preview-display" id="icon-display">🎯</div>
+        <span class="icon-preview-label">Tap icon to change</span>
+      </div>
+
+      <!-- Basic info -->
+      <div class="ios-section">
+        <p class="ios-section-label">Info</p>
+        <div class="ios-group">
+          <div class="ios-row">
+            <label class="ios-row-label" for="f-name">Name</label>
+            <input id="f-name" class="ios-input" type="text" placeholder="Habit name" maxlength="40">
+          </div>
+          <div class="ios-row">
+            <label class="ios-row-label" for="f-desc">Notes</label>
+            <input id="f-desc" class="ios-input" type="text" placeholder="Optional description">
+          </div>
+          <div class="ios-row">
+            <label class="ios-row-label" for="f-time">Reminder</label>
+            <input id="f-time" class="ios-input" type="time">
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="ios-section">
+        <p class="ios-section-label">Schedule</p>
+        <div class="ios-group">
+          <div class="day-row" id="day-row"><!-- JS --></div>
+        </div>
+      </div>
+
+      <!-- Icon -->
+      <div class="ios-section">
+        <p class="ios-section-label">Icon</p>
+        <div class="ios-group">
+          <div class="icon-grid" id="icon-grid"><!-- JS --></div>
+        </div>
+      </div>
+
+      <!-- Priority + Color -->
+      <div class="ios-section">
+        <p class="ios-section-label">Priority</p>
+        <div class="ios-group">
+          <div class="prio-row" id="prio-row"><!-- JS --></div>
+        </div>
+      </div>
+
+      <div class="ios-section pb-nav">
+        <p class="ios-section-label">Color</p>
+        <div class="ios-group">
+          <div class="color-row" id="color-row"><!-- JS --></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DETAIL ── -->
+    <section id="screen-detail" class="screen">
+      <header class="detail-header">
+        <button class="back-btn" onclick="App.nav('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <div class="detail-icon-big" id="d-icon-box">🎯</div>
+        <div class="detail-title">
+          <p class="detail-name" id="d-name">Habit</p>
+          <p class="detail-desc" id="d-desc">No description</p>
+        </div>
+        <div class="detail-actions">
+          <button class="detail-btn red" id="d-edit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+          </button>
+          <button class="detail-btn" id="d-del" style="color:#FF3B30;background:rgba(255,59,48,.1)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14H6L5 6" />
+              <path d="M10 11v6M14 11v6" />
+              <path d="M9 6V4h6v2" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="detail-body pb-nav">
+        <div class="detail-stats-row">
+          <div class="dstat-card">
+            <div class="dstat-val" id="d-streak">0</div>
+            <div class="dstat-lbl">Streak 🔥</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-val" id="d-best">0</div>
+            <div class="dstat-lbl">Best</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-val" id="d-done">0</div>
+            <div class="dstat-lbl">Total</div>
+          </div>
+        </div>
+
+        <div class="comp-bar-card">
+          <div class="comp-bar-header">
+            <span class="comp-bar-lbl">Completion Rate</span>
+            <span class="comp-bar-pct" id="d-rate">0%</span>
+          </div>
+          <div class="comp-track">
+            <div class="comp-fill" id="d-bar" style="width:0"></div>
+          </div>
+        </div>
+
+        <div class="stats-card">
+          <p class="stats-card-title">Last 7 Days</p>
+          <div class="wcal" id="d-wcal"><!-- JS --></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── STATS ── -->
+    <section id="screen-stats" class="screen">
+      <div class="stats-header">
+        <h1>Statistics</h1>
+      </div>
+
+      <!-- Score card -->
+      <div class="score-card">
+        <div class="score-ring-wrap">
+          <svg width="100" height="100" viewBox="0 0 100 100" style="transform:rotate(-90deg)">
+            <circle class="score-track" cx="50" cy="50" r="44" />
+            <circle class="score-fill" id="score-fill" cx="50" cy="50" r="44" />
+          </svg>
+          <div class="score-center">
+            <span class="score-num" id="s-score">0</span>
+            <span class="score-label-sm">Score</span>
+          </div>
+        </div>
+        <div class="score-details">
+          <div class="sdet">
+            <div class="sdet-ic" style="background:rgba(255,159,10,.14)">🔥</div>
+            <div class="sdet-info">
+              <div class="sdet-val" id="s-best">0</div>
+              <div class="sdet-lbl">Best Streak</div>
+            </div>
+          </div>
+          <div class="sdet">
+            <div class="sdet-ic" style="background:rgba(48,209,88,.14)">✅</div>
+            <div class="sdet-info">
+              <div class="sdet-val" id="s-total">0</div>
+              <div class="sdet-lbl">Completions</div>
+            </div>
+          </div>
+          <div class="sdet">
+            <div class="sdet-ic" style="background:rgba(10,132,255,.14)">📊</div>
+            <div class="sdet-info">
+              <div class="sdet-val" id="s-rate">0%</div>
+              <div class="sdet-lbl">Success Rate</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week chart -->
+      <div class="stats-section pb-nav">
+        <div class="stats-card">
+          <p class="stats-card-title">Weekly Activity</p>
+          <div class="week-chart" id="bar-chart"><!-- JS --></div>
+        </div>
+
+        <div class="stats-card">
+          <p class="stats-card-title">90-Day Heatmap</p>
+          <div class="hm-grid" id="heatmap"><!-- JS --></div>
+        </div>
+
+        <div class="stats-card">
+          <p class="stats-card-title">Leaderboard</p>
+          <div id="lb-list"><!-- JS --></div>
+        </div>
+
+        <div class="stats-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <p class="stats-card-title" style="margin:0">Badges</p>
+            <span style="font-size:12px;color:var(--text-3)" id="bdg-count"></span>
+          </div>
+          <div class="badge-grid" id="bdg-grid"><!-- JS --></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SETTINGS ── -->
+    <section id="screen-settings" class="screen">
+      <div class="settings-header">
+        <h1>Settings</h1>
+      </div>
+
+      <div class="settings-section">
+        <p class="settings-label">Notifications</p>
+        <div class="settings-group">
+          <div class="settings-row" onclick="App.toggleNotif()">
+            <div class="settings-icon" style="background:rgba(255,159,10,.14)">🔔</div>
+            <span class="settings-row-label">Reminders</span>
+            <div id="notif-toggle" class="ios-toggle">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+          <div class="settings-row" onclick="App.sendTestNotif()">
+            <div class="settings-icon" style="background:rgba(10,132,255,.14)">📣</div>
+            <span class="settings-row-label">Send Test</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              style="width:16px;height:16px;stroke-width:2;color:var(--text-3)">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <p class="settings-label">Data</p>
+        <div class="settings-group">
+          <div class="settings-row" onclick="App.exportData()">
+            <div class="settings-icon" style="background:rgba(48,209,88,.14)">💾</div>
+            <span class="settings-row-label">Export Data</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              style="width:16px;height:16px;stroke-width:2;color:var(--text-3)">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+          <div class="settings-row" onclick="App.resetData()">
+            <div class="settings-icon" style="background:rgba(255,59,48,.1)">⚠️</div>
+            <span class="settings-row-label danger">Reset All Data</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section pb-nav">
+        <p class="settings-label">About</p>
+        <div class="settings-group">
+          <div class="settings-row">
+            <div class="settings-icon" style="background:rgba(191,90,242,.14)">🔱</div>
+            <span class="settings-row-label">DeOs Discipline</span>
+            <span class="settings-row-value">v3.0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB BAR ── -->
+    <nav class="tab-bar">
+      <button class="tab-item active" data-s="home" onclick="App.nav('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab-item" data-s="stats" onclick="App.nav('stats')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M12 20V10M18 20V4M6 20v-4" />
+        </svg>
+        <span>Stats</span>
+      </button>
+      <div class="tab-fab">
+        <button class="fab-btn" onclick="App.nav('add')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </button>
+      </div>
+      <button class="tab-item" data-s="stats" onclick="App.nav('stats')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M6 9H4.5a2.5 2.5 0 010-5H6" />
+          <path d="M18 9h1.5a2.5 2.5 0 000-5H18" />
+          <path d="M4 22h16" />
+          <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+          <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+          <path d="M18 2H6v7a6 6 0 0012 0V2z" />
+        </svg>
+        <span>Awards</span>
+      </button>
+      <button class="tab-item" data-s="settings" onclick="App.nav('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M2 20c0-4 4-7 10-7s10 3 10 7" />
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+
+  </div><!-- #app -->
+
+  <!-- Overlays -->
+  <div id="app-toast"></div>
+
+  <div id="install-banner">
+    <div>
+      <p class="install-text">Install DeOs Discipline</p>
+      <p class="install-sub">Add to Home Screen for offline use</p>
+    </div>
+    <button class="install-btn" onclick="App.promptInstall()">Install</button>
+    <button onclick="App.hideInstallBanner()" style="color:var(--text-3);font-size:20px;padding:0 4px;">×</button>
+  </div>
+
+  <div id="confirm-modal" class="modal-bg">
+    <div class="modal-sheet">
+      <p class="modal-title" id="conf-title">Confirm</p>
+      <p class="modal-body" id="conf-text">Are you sure?</p>
+      <div class="modal-actions">
+        <button class="modal-btn danger" id="conf-yes">Delete</button>
+        <button class="modal-btn" id="conf-no">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="milestone-sheet" class="milestone-sheet">
+    <div class="milestone-card">
+      <div class="ms-emoji">🔥</div>
+      <div class="ms-streak" id="ms-streak">7 Days</div>
+      <p class="ms-msg" id="ms-msg">One week strong!</p>
+      <button class="ms-close" onclick="App.closeMilestone()">Keep Going! 💪</button>
+    </div>
+  </div>
+
+  <div id="badge-toast">
+    <div class="bt-left">
+      <p class="bt-name" id="bt-name">Badge</p>
+      <p class="bt-desc" id="bt-desc"></p>
+      <p class="bt-rarity" id="bt-rarity"></p>
+    </div>
+    <span class="bt-em" id="bt-emoji">🏆</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/quotes.js"></script>
+  <script src="js/badges.js"></script>
+  <script src="js/habits.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/streaks.js"></script>
+  <script src="js/stats.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
